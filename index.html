@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마맘마마마 마왕님! - 공식 대시보드</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Black+Han Sans&family=Noto+Sans+KR:wght=300;400;700;900&display=swap');
+        
+        :root {
+            --bg-black: #000000;
+            --bg-dark: #090a0f;
+            --bg-card: #12141c;
+            --bg-card-hover: #1a1d2a;
+            --accent-red: #f14040;
+            --accent-yellow: #ffca28;
+            --text-main: #ffffff;
+            --text-muted: #7c8394;
+            --border-color: rgba(255, 255, 255, 0.06);
+            --messenger-bg: #0e1017;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 인트로 게이트 */
+        #intro-gate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-black);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
+            padding: 20px;
+        }
+
+        #intro-gate.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .intro-title-wrapper {
+            font-family: 'Black Han Sans', sans-serif;
+            text-align: center;
+            line-height: 1.05;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+            user-select: none;
+        }
+
+        .title-row-top {
+            font-size: clamp(3.5rem, 8vw, 6.5rem);
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .title-row-bottom {
+            font-size: clamp(5.5rem, 14vw, 11rem);
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .color-red { color: var(--accent-red); }
+        .color-yellow { color: var(--accent-yellow); }
+        .color-white { color: #ffffff; }
+
+        .intro-subtitle {
+            color: var(--text-muted);
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            letter-spacing: 6px;
+            margin-top: 20px;
+            font-weight: 300;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .enter-castle-btn {
+            background: transparent;
+            border: 3px solid #ffffff;
+            color: #ffffff;
+            padding: 18px 70px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            cursor: pointer;
+            margin-top: 60px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .enter-castle-btn:hover {
+            background: #ffffff;
+            color: #000000;
+            box-shadow: 0 0 30px rgba(255,255,255,0.2);
+            transform: translateY(-4px);
+        }
+
+        /* 메인 대시보드 구조 */
+        #main-dashboard {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background-color: var(--bg-dark);
+            min-height: 100vh;
+        }
+
+        #main-dashboard.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .global-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 40px;
+            background-color: rgba(9, 10, 15, 0.85);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-brand {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-right-side {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .tab-menu-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .menu-tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 12px 26px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .menu-tab-btn:hover { color: #fff; }
+
+        .menu-tab-btn.active {
+            color: #000000;
+            background-color: #ffffff;
+            font-weight: 900;
+        }
+
+        /* BGM 오디오 컨트롤러 */
+        .audio-controller-widget {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .bgm-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            width: 80px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ffffff;
+            transition: transform 0.1s;
+        }
+
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .audio-toggle-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .audio-toggle-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 24px;
+            padding-bottom: 100px;
+        }
+
+        .view-panel {
+            display: none;
+            animation: panelFadeIn 0.5s ease forwards;
+        }
+
+        .view-panel.active { display: block; }
+
+        @keyframes panelFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 세계관 영역 (LORE) */
+        .lore-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .lore-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 35px;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lore-card-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .lore-card h2 {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 2.1rem;
+            margin-bottom: 15px;
+            font-weight: 400;
+        }
+
+        .lore-card p {
+            color: #b2b9c7;
+            line-height: 1.8;
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+        }
+
+        .lore-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            font-weight: 900;
+            padding: 6px 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .lore-status-badge.stable {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.2);
+        }
+
+        .lore-status-badge.warning {
+            background: rgba(241, 64, 64, 0.1);
+            color: var(--accent-red);
+            border: 1px solid rgba(241, 64, 64, 0.2);
+            animation: systemBlink 1.5s infinite ease-in-out;
+        }
+
+        @keyframes systemBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .lore-meta-panel {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 20px;
+        }
+
+        .lore-meta-item {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .lore-meta-item .item-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .lore-meta-item .item-value {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        /* 인트라넷 채널 섹션 */
+        .lore-chat-section {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .lore-chat-section h3 {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .lore-icons-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin: 25px 0 10px 0;
+        }
+
+        .lore-mini-icon-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            padding: 12px 24px;
+            border-radius: 40px;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .lore-mini-icon-btn img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .lore-mini-icon-btn:hover {
+            background-color: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+            transform: scale(1.04);
+        }
+
+        /* 독립 메신저 모달 팝업 구조 스타일 */
+        #messenger-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .messenger-window {
+            background-color: #151722;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 480px;
+            height: 640px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            animation: messengerOpen 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes messengerOpen {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .messenger-header {
+            background: #1c1f2f;
+            padding: 18px 24px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            letter-spacing: 0.5px;
+        }
+
+        .messenger-close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+
+        .messenger-close-btn:hover { color: #fff; }
+
+        .messenger-chat-area {
+            padding: 24px;
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: var(--messenger-bg);
+            scroll-behavior: smooth;
+        }
+
+        .chat-msg-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            max-width: 90%;
+        }
+
+        /* 유저 보낸 방향 정열 */
+        .chat-msg-item.user-side {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .chat-room-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid rgba(255,255,255,0.1);
+            flex-shrink: 0;
+        }
+
+        .chat-room-content {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .chat-msg-item.user-side .chat-room-content {
+            align-items: flex-end;
+        }
+
+        .chat-room-sender {
+            font-size: 0.85rem;
+            color: #8a92a6;
+            font-weight: 700;
+        }
+
+        .chat-bubble-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .chat-msg-item.user-side .chat-bubble-row {
+            flex-direction: row-reverse;
+        }
+
+        .chat-room-bubble {
+            background-color: #222638;
+            color: #e1e7f5;
+            padding: 14px 18px;
+            border-radius: 0px 16px 16px 16px;
+            line-height: 1.7;
+            font-size: 0.98rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            word-break: break-all;
+            position: relative;
+        }
+
+        /* 유저 전용 말풍선 디자인 */
+        .chat-msg-item.user-side .chat-room-bubble {
+            background-color: #3b4260;
+            color: #ffffff;
+            border-radius: 16px 0px 16px 16px;
+        }
+
+        .chat-room-bubble.typing::after {
+            content: '|';
+            animation: cursorBlink 0.8s infinite;
+            font-weight: 100;
+            color: var(--accent-yellow);
+            margin-left: 2px;
+        }
+
+        @keyframes cursorBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .chat-room-time {
+            font-size: 0.72rem;
+            color: #52596b;
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        /* 하단 입력 인터페이스 영역 */
+        .messenger-footer-input-area {
+            background: #12141c;
+            padding: 14px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .messenger-input-field {
+            flex: 1;
+            background: #1c1f2f;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .messenger-input-field:focus {
+            border-color: var(--accent-red);
+        }
+
+        .messenger-send-btn {
+            background-color: var(--accent-red);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .messenger-send-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        /* 등장인물 카드 영역 */
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .summary-char-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+        }
+
+        .summary-char-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+
+        .card-img-holder {
+            width: 100%;
+            position: relative;
+            padding-top: 100%;
+            background-color: #161822;
+            overflow: hidden;
+        }
+
+        .card-img-holder img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .summary-char-card:hover .card-img-holder img {
+            transform: scale(1.05);
+        }
+
+        .card-brief-info {
+            padding: 24px;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.02);
+        }
+
+        .brief-dept {
+            font-size: 0.8rem;
+            color: var(--accent-yellow);
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .brief-name {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .brief-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .view-more-action {
+            margin-top: 15px;
+            font-size: 0.75rem;
+            color: #ffffff;
+            opacity: 0.4;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: opacity 0.2s;
+        }
+
+        .summary-char-card:hover .view-more-action {
+            opacity: 1;
+            color: var(--accent-red);
+        }
+
+        /* 상세 정보 모달 */
+        #detail-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-container {
+            background-color: #0e1017;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: stretch;
+        }
+
+        .modal-img-side {
+            width: 100%;
+            aspect-ratio: 1 / 1; 
+            background-color: #161822;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-img-side img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-data-side {
+            padding: 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .modal-close-trigger {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: none;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .modal-close-trigger:hover {
+            background-color: #fff;
+            color: #000;
+        }
+
+        .modal-header-section {
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .modal-dept-label {
+            font-size: 0.9rem;
+            color: var(--accent-red);
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .modal-char-name {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 400;
+        }
+
+        .modal-specs-list {
+            list-style: none;
+            font-size: 1.05rem;
+            margin-bottom: 30px;
+        }
+
+        .modal-specs-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+            display: flex;
+        }
+
+        .modal-specs-list .label {
+            color: var(--text-muted);
+            min-width: 75px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .modal-specs-list .desc {
+            color: #e3e9f5;
+            flex: 1;
+        }
+
+        .modal-quote-box {
+            margin-top: 20px;
+            background-color: rgba(255,255,255,0.03);
+            border-left: 4px solid #ffffff;
+            padding: 20px;
+            font-style: italic;
+            font-size: 1rem;
+            color: #d1d7e3;
+            line-height: 1.6;
+        }
+
+        /* -------------------------------------
+           모바일 반응형 (Media Queries) 추가 영역
+           ------------------------------------- */
+        @media (max-width: 900px) {
+            .lore-grid { grid-template-columns: 1fr; }
+            .header-right-side { flex-direction: column-reverse; gap: 15px; }
+        }
+
+        @media (max-width: 850px) {
+            .modal-container { grid-template-columns: 1fr; max-height: 95vh; }
+            .modal-img-side { aspect-ratio: auto; height: 300px; }
+        }
+
+        @media (max-width: 768px) {
+            /* 헤더 모바일 최적화 */
+            .global-header {
+                flex-direction: column;
+                padding: 15px 20px;
+                gap: 15px;
+            }
+            .header-brand {
+                font-size: 1.5rem;
+            }
+            .tab-menu-group {
+                width: 100%;
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 5px; /* 스와이프 스크롤 여백 */
+            }
+            .menu-tab-btn {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+
+            /* 컨테이너 및 섹션 여백 최적화 */
+            .main-container {
+                padding: 0 15px;
+                margin: 20px auto;
+            }
+            .lore-card, .lore-chat-section {
+                padding: 20px;
+            }
+            .lore-card h2 {
+                font-size: 1.6rem;
+            }
+            .lore-meta-panel {
+                grid-template-columns: 1fr; /* 메타데이터 1줄 정렬 */
+            }
+            .lore-icons-row {
+                justify-content: center;
+            }
+            .lore-mini-icon-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* 폰트 및 버튼 크기 조정 */
+            .title-row-top { font-size: 3rem; }
+            .title-row-bottom { font-size: 4.5rem; }
+            .enter-castle-btn {
+                padding: 15px 40px;
+                font-size: 1.1rem;
+            }
+
+            /* 메신저 팝업 최적화 */
+            .messenger-window {
+                height: 85vh; /* 폰 화면 높이에 맞게 조절 */
+            }
+            .chat-room-bubble {
+                font-size: 0.9rem;
+                padding: 12px 14px;
+            }
+
+            /* 캐릭터 상세 모달 최적화 */
+            .modal-data-side {
+                padding: 20px;
+            }
+            .modal-char-name {
+                font-size: 2.2rem;
+            }
+            .modal-specs-list {
+                font-size: 0.95rem;
+            }
+            .modal-specs-list li {
+                flex-direction: column; /* 라벨과 내용을 위아래로 배치 */
+                gap: 5px;
+            }
+            .modal-specs-list .label {
+                margin-bottom: 0;
+                color: var(--accent-red);
+            }
+            
+            /* 캐릭터 리스트 그리드 최적화 (2단 분리 방지) */
+            .characters-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="dashboard-bgm" src="https://raw.githubusercontent.com/deokc/MAWANG/main/Gargoyle%20Tea%20Room_01.mp3" loop></audio>
+
+    <div id="intro-gate">
+        <div class="intro-title-wrapper">
+            <div class="title-row-top">마맘마마마</div>
+            <div class="title-row-bottom">
+                <span class="color-red">마</span>
+                <span class="color-yellow">왕</span>
+                <span class="color-white">님!</span>
+            </div>
+        </div>
+        <div class="intro-subtitle">마왕이 쇼츠 중독인 건에 대하여</div>
+        <button class="enter-castle-btn" onclick="executeGateOpen()">입장하기</button>
+    </div>
+
+    <div id="main-dashboard">
+        
+        <header class="global-header">
+            <div class="header-brand">
+                <span class="color-white">마맘마마마 </span>
+                <span class="color-red">마</span>
+                <span class="color-yellow">왕</span>
+                <span class="color-white">님!</span>
+            </div>
+            
+            <div class="header-right-side">
+                <div class="audio-controller-widget">
+                    <span class="bgm-label">BGM</span>
+                    <input type="range" id="volume-range-bar" class="volume-slider" min="0" max="1" step="0.05" value="0.3" oninput="adjustBgmVolume(this.value)">
+                    <button id="bgm-state-btn" class="audio-toggle-btn" onclick="toggleBgmPlayState()">⏸</button>
+                </div>
+
+                <nav class="tab-menu-group">
+                    <button class="menu-tab-btn active" onclick="switchDashboardPanel(event, 'panel-lore')">세계관 설정</button>
+                    <button class="menu-tab-btn" onclick="switchDashboardPanel(event, 'panel-characters')">등장인물</button>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main-container">
+            
+            <section id="panel-lore" class="view-panel active">
+                <div class="lore-grid">
+                    <div class="lore-card">
+                        <div class="lore-status-badge stable">● 차원 안정도 99.8% (평화조약 가동 중)</div>
+                        <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EB%84%A4%EB%B7%B8%ED%97%A4%EC%9E%84.png" class="lore-card-img" alt="네뷸헤임">
+                        <h2>네뷸헤임 (Nebulheim)</h2>
+                        <p>수많은 마족들이 거주하는 광활한 차원의 세계. 과거에는 생존과 영토 확장을 목적으로 끊임없는 유혈 사태가 벌어지던 가혹한 대전쟁 시대였으나, 긴 전쟁 끝에 모든 종족이 상생을 도모하며 역사적인 '종언전쟁 평화조약'을 체결하였습니다.</p>
+                        <p>이 조약 과정에서 시엘의 선조가 초대 마왕으로 추대되었으며, 그 유산과 절대적인 권력은 현재 마왕 시엘에게 모두 상속되었습니다.</p>
+                        
+                        <div class="lore-meta-panel">
+                            <div class="lore-meta-item">
+                                <div class="item-label">차원 인프라 상태</div>
+                                <div class="item-value">다소 안정적</div>
+                            </div>
+                            <div class="lore-meta-item">
+                                <div class="item-label">현 마왕</div>
+                                <div class="item-value">시엘라 템페스타 루나리스 폰 템페리온</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lore-card">
+                        <div class="lore-status-badge warning">⚠️ 마왕성 기후 시스템 경보 발령</div>
+                        <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%85%9C%ED%8E%98%EC%8A%A4%ED%83%80%20%EC%BA%90%EC%8A%AC.png" class="lore-card-img" alt="템페스타 캐슬">
+                        <h2>템페스타 캐슬 (Tempesta Castle)</h2>
+                        <p>평화가 정착된 현대 마계의 흐름에 발맞추어, 과거 군사 중심 요새였던 마왕성을 현대적인 '컴퍼니 기업형 오피스 구조'로 전면 개편한 상징적인 장소입니다. 엘리트 마족 사원들이 저마다의 부서 직책을 배정받아 성을 경영하고 있습니다.</p>
+                        <p>기상 이변 제어 마법력을 지닌 마왕 시엘의 감정 기복 상태에 따라, 성에는 폭풍우가 치거나 한여름에 눈이 내리는 역동적인 지능형 기후 인프라를 자랑합니다.</p>
+                        
+                        <div class="lore-meta-panel">
+                            <div class="lore-meta-item">
+                                <div class="item-label">실시간 성내 기후</div>
+                                <div class="item-value" style="color: var(--accent-yellow);">국지성 호우주의</div>
+                            </div>
+                            <div class="lore-meta-item">
+                                <div class="item-label">성 보안망</div>
+                                <div class="item-value">시엘 전용 기가 마력 와이파이</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lore-chat-section">
+                    <h3>실시간 네트워킹 채널</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">대화를 나눌 인물의 아이콘을 선택하면 템페스타 캐슬 인트라넷 전용 채팅방이 단독 개설됩니다.</p>
+                    
+                    <div class="lore-icons-row">
+                        <button class="lore-mini-icon-btn" onclick="openLiveMessenger('ciel')">
+                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%8B%9C%EC%97%98.png" alt="시엘"> 시엘
+                        </button>
+                        <button class="lore-mini-icon-btn" onclick="openLiveMessenger('kobel')">
+                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%BD%94%EB%B2%A8.png" alt="코벨"> 코벨
+                        </button>
+                        <button class="lore-mini-icon-btn" onclick="openLiveMessenger('volga')">
+                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EB%B3%BC%EA%B0%80.png" alt="볼가"> 볼가
+                        </button>
+                        <button class="lore-mini-icon-btn" onclick="openLiveMessenger('ivelin')">
+                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%9D%B4%EB%B2%A8%EB%A6%B0.png" alt="이벨린"> 이벨린
+                        </button>
+                        <button class="lore-mini-icon-btn" onclick="openLiveMessenger('tuba')">
+                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%88%AC%EB%B0%94.png" alt="투바"> 투바
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="panel-characters" class="view-panel">
+                <div class="characters-grid">
+                    
+                    <div class="summary-char-card" onclick="launchDetailModal('ciel')">
+                        <div class="card-img-holder">
+                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%8B%9C%EC%97%98.png" alt="시엘">
+                        </div>
+                        <div class="card-brief-info">
+                            <div class="brief-dept">마왕</div>
+                            <div class="brief-name">시엘</div>
+                            <div class="brief-meta">템페리온</div>
+                            <div class="view-more-action">Click to view details</div>
+                        </div>
+                    </div>
+
+                    <div class="summary-char-card" onclick="launchDetailModal('finale')">
+                        <div class="card-img-holder">
+                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%94%BC%EB%82%A0%EB%A0%88.png" alt="피날레">
+                        </div>
+                        <div class="card-brief-info">
+                            <div class="brief-dept">전략기획실장 겸 수석 아티스트</div>
+                            <div class="brief-name">피날레</div>
+                            <div class="brief-meta">고르곤</div>
+                            <div class="view-more-action">Click to view details</div>
+                        </div>
+                    </div>
+
+                    <div class="summary-char-card" onclick="launchDetailModal('kobel')">
+                        <div class="card-img-holder">
+                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%BD%94%EB%B2%A8.png" alt="코벨">
+                        </div>
+                        <div class="card-brief-info">
+                            <div class="brief-dept">문화 · 예술팀장</div>
+                            <div class="brief-name">코벨</div>
+                            <div class="brief-meta">서큐버스</div>
+                            <div class="view-more-action">Click to view details</div>
+                        </div>
+                    </div>
+
+                    <div class="summary-char-card" onclick="launchDetailModal('ivelin')">
+                        <div class="card-img-holder">
+                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%9D%B4%EB%B2%A8%EB%A6%B0.png" alt="이벨린">
+                        </div>
+                        <div class="card-brief-info">
+                            <div class="brief-dept">재무 · 회계팀장</div>
+                            <div class="brief-name">이벨린</div>
+                            <div class="brief-meta">흡혈귀</div>
+                            <div class="view-more-action">Click to view details</div>
+                        </div>
+                    </div>
+
+                    <div class="summary-char-card" onclick="launchDetailModal('pen')">
+                        <div class="card-img-holder">
+                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%8E%9C.png" alt="펜">
+                        </div>
+                        <div class="card-brief-info">
+                            <div class="brief-dept">인사팀장</div>
+                            <div class="brief-name">펜</div>
+                            <div class="brief-meta">오르도니아</div>
+                            <div class="view-more-action">Click to view details</div>
+                        </div>
+                    </div>
+
+                    <div class="summary-char-card" onclick="launchDetailModal('volga')">
+                        <div class="card-img-holder">
+                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EB%B3%BC%EA%B0%80.png" alt="볼가">
+                        </div>
+                        <div class="card-brief-info">
+                            <div class="brief-dept">비서실장 겸 감찰부장</div>
+                            <div class="brief-name">볼가</div>
+                            <div class="brief-meta">슬리피안</div>
+                            <div class="view-more-action">Click to view details</div>
+                        </div>
+                    </div>
+
+                    <div class="summary-char-card" onclick="launchDetailModal('franc')">
+                        <div class="card-img-holder">
+                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%94%84%EB%9E%91.png" alt="프랑">
+                        </div>
+                        <div class="card-brief-info">
+                            <div class="brief-dept">시설관리 겸 안전보건팀장</div>
+                            <div class="brief-name">프랑</div>
+                            <div class="brief-meta">언데드</div>
+                            <div class="view-more-action">Click to view details</div>
+                        </div>
+                    </div>
+
+                    <div class="summary-char-card" onclick="launchDetailModal('tuba')">
+                        <div class="card-img-holder">
+                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%88%AC%EB%B0%94.png" alt="투바">
+                        </div>
+                        <div class="card-brief-info">
+                            <div class="brief-dept">홍보팀장 겸 스트리머</div>
+                            <div class="brief-name">투바</div>
+                            <div class="brief-meta">카르드라</div>
+                            <div class="view-more-action">Click to view details</div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 캐릭터 상세 인포 모달 레이어 -->
+    <div id="detail-modal-overlay" onclick="closeDetailModal()">
+        <div class="modal-container" onclick="event.stopPropagation()">
+            <button class="modal-close-trigger" onclick="closeDetailModal()">CLOSE ×</button>
+            <div class="modal-img-side" id="modal-target-img-wrap"></div>
+            <div class="modal-data-side" id="modal-target-data-wrap"></div>
+        </div>
+    </div>
+
+    <!-- 메신저 채팅방 전용 독립 모달 레이어 -->
+    <div id="messenger-modal-overlay" onclick="closeMessengerModal()">
+        <div class="messenger-window" onclick="event.stopPropagation()">
+            <div class="messenger-header">
+                <span id="msg-header-title">인트라넷 톡방</span>
+                <button class="messenger-close-btn" onclick="closeMessengerModal()">×</button>
+            </div>
+            <div class="messenger-chat-area" id="msg-chat-area-node">
+                <!-- 가상 렌더링 영역 -->
+            </div>
+            <!-- 쌍방향 입력을 전담하는 새로운 하단 바 구성 -->
+            <div class="messenger-footer-input-area">
+                <input type="text" id="msg-user-input" class="messenger-input-field" placeholder="메시지를 입력해 보세요..." onkeydown="handleChatKeyDown(event)">
+                <button class="messenger-send-btn" onclick="submitUserMessage()">전송</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const audioObject = document.getElementById('dashboard-bgm');
+        const audioStateBtn = document.getElementById('bgm-state-btn');
+        let currentTypingTimer = null; 
+        let activeCharacterId = null; // 현재 활성화된 캐릭터 ID 관리
+        let responseTrackers = { ciel: 0, kobel: 0, volga: 0, ivelin: 0, tuba: 0 }; // 캐릭터별 답변 흐름 제어 카운터
+
+        const GlobalCastleRegistry = {
+            ciel: {
+                dept: "마왕",
+                name: "시엘",
+                imgSrc: "https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%8B%9C%EC%97%98.png",
+                specs: [
+                    { label: "프로필", desc: "템페리온 / 여성 / 8000세 (외관나이 20대) / 183cm" },
+                    { label: "외관", desc: "적발 롱 헤어, 검정 브릿지 포인팅, 금안." },
+                    { label: "성격", desc: "실무는 관리직원들에게 전부 일임한 채 스마트폰 숏폼 콘텐츠에 완벽히 중독된 하찮은 트렌드 세터 마왕." },
+                    { label: "특징", desc: "감정선 동기화 기상 제어 능력 보유. 언제든지 여성형 / 남성형 신체 전환 가능. 인간계 진출을 꿈꾸고 있음." }
+                ],
+                quote: "마왕성 옥상에 쇼츠 챌린지 전용 무대를 설치하도록. 이것이 내가 추구하는 '트렌디 마왕성'의 길이다."
+            },
+            finale: {
+                dept: "전략기획실장 겸 수석 아티스트",
+                name: "피날레",
+                imgSrc: "https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%94%BC%EB%82%A0%EB%A0%88.png",
+                specs: [
+                    { label: "프로필", desc: "고르곤 / 여성 / 외관나이 30대 / 172cm" },
+                    { label: "외관", desc: "회백색의 수려한 장발, 세로 동공 형태의 청록안." },
+                    { label: "성격", desc: "즉흥성과 계획 이탈을 싫어하는 완벽 강박 설계자. 늘 미소를 띠고 있으나 매우 계산적임." },
+                    { label: "특징", desc: "상대를 석화 시키는 능력 보유. 생명체가 극심한 고통 속에 절정에 달한 순간을 조각상으로 박제하려는 왜곡된 미학 소유." }
+                ],
+                quote: "흠, 이 피사체의 고통에 찬 표정은... 미완성이군. '아름다운' 비명 소리를 한 번 더 듣고 석화시키면 완벽할 텐데."
+            },
+            kobel: {
+                dept: "문화 · 예술팀장",
+                name: "코벨",
+                imgSrc: "https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%BD%94%EB%B2%A8.png",
+                specs: [
+                    { label: "프로필", desc: "서큐버스 / 여성 / 외관나이 20대 / 158cm" },
+                    { label: "외관", desc: "분홍색 트윈테일 헤어, 녹안, 소형 날개와 가느다란 꼬리." },
+                    { label: "성격", desc: "중2병 대사를 스스럼없이 내뱉으며 피규어에 환장하는 오타쿠. 희귀 한정판 피규어 도색 작업에 목숨 걸 정도." },
+                    { label: "특징", desc: "종족 명성이 부끄러울 수준의 유혹 성공률 0%. 극한의 패닉 상태 도래 시 중2병 컨셉이 붕괴됨." }
+                ],
+                quote: "아아, 나의 여신님... 오늘도 당신의 도색 상태는 '완벽' 그 자체군요."
+            },
+            ivelin: {
+                dept: "재무 · 회계팀장",
+                name: "이벨린",
+                imgSrc: "https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%9D%B4%EB%B2%A8%EB%A6%B0.png",
+                specs: [
+                    { label: "프로필", desc: "흡혈귀 / 여성 / 외관나이 20대 / 163cm" },
+                    { label: "외관", desc: "단정히 고정된 백발 올림머리, 비대칭 라인의 앞머리 컷, 분홍안." },
+                    { label: "성격", desc: "마왕성의 빈곤하고 펑크 난 예산 안에서 모든 지출을 틀어막는 극단적 현실주의 영수증 청산 마녀." },
+                    { label: "특징", desc: "정작 흡혈귀 혈통이면서 실제 혈흔을 마주하면 공포감에 기절함. 100% 농축 유기농 토마토 주스로 대체 생계 유지." }
+                ],
+                quote: "마왕님, 이번 달 쇼츠 유료 결제액이 마왕성 한 달 식비와 맞먹습니다. 알고 계십니까?"
+            },
+            pen: {
+                dept: "인사팀장",
+                name: "펜",
+                imgSrc: "https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%8E%9C.png",
+                specs: [
+                    { label: "프로필", desc: "오르도니아 / 남성 / 외관나이 20대 / 175cm" },
+                    { label: "외관", desc: "정갈한 흑발, 흑안, 입술 밑과 눈 밑에 점, 머리 위의 헤일로와 거대한 날개." },
+                    { label: "성격", desc: "모든 마족들의 과중 업무와 억울한 하소연을 상냥하게 케어해 주는 마왕성 유일무이 최고의 수호자." },
+                    { label: "특징", desc: "상대의 기억 투시 능력 보유. 과도한 수치심이나 극심한 민망함을 겪을 시 까마귀로 변함." }
+                ],
+                quote: "오늘 유독 안색이 창백하시네요. 이번 주말에는 고향에 다녀오시는 게 어떨까요? 제가 특별 휴가 결재를 올려둘게요."
+            },
+            volga: {
+                dept: "비서실장 겸 감찰부장",
+                name: "볼가",
+                imgSrc: "https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EB%B3%BC%EA%B0%80.png",
+                specs: [
+                    { label: "프로필", desc: "슬리피안 / 남성 / 외관나이 20대 / 186cm" },
+                    { label: "외관", desc: "적색 그라데이션 가미된 흑발 포니테일, 적안." },
+                    { label: "성격", desc: "규율 주의자형 충신이나, 위엄 넘치는 직책과 반대로 상시 잠이 쏟아져 내적 자괴감에 시달림." },
+                    { label: "특징", desc: "최면 능력 보유. 만성 기면증 증세로 인해 보행 중 혹은 진지한 대화 중에도 무작위로 전원이 꺼지듯 숙면." }
+                ],
+                quote: "......저는 졸지 않았습니다. 고도의 명상을 통해 감찰 대상을 분석하던 중이었습니다."
+            },
+            franc: {
+                dept: "시설관리 겸 안전보건팀장",
+                name: "프랑",
+                imgSrc: "https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%94%84%EB%9E%91.png",
+                specs: [
+                    { label: "프로필", desc: "언데드 / 남성 / 외관나이 20대 / 180cm" },
+                    { label: "외관", desc: "백발 울프컷, 하단 블랙 투톤 염색 가미, 회안, 안면 및 전신 피부 전체에 스티치 자국." },
+                    { label: "성격", desc: "내일 세상이 멸망해도 그저 유쾌하고 즐거운 초긍정 마이웨이형 해피 바이러스 소유자." },
+                    { label: "특징", desc: "신경계 완전 단절로 인한 물리 통각 제로 상태. 시설 보수 작업 도중 목이나 팔 파츠가 분리되어 이탈하면 태연하게 바늘로 봉합 후 복구." }
+                ],
+                quote: "어라라? 또 팔이 빠졌네! 멀리 날아간 제 왼손 좀 던져주세요! 나이스 캐치~!"
+            },
+            tuba: {
+                dept: "홍보팀장 겸 스트리머",
+                name: "투바",
+                imgSrc: "https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%88%AC%EB%B0%94.png",
+                specs: [
+                    { label: "프로필", desc: "카르드라 / 남성 / 외관나이 10대 / 168cm" },
+                    { label: "외관", desc: "어두운 자색 헤어, 자안, 콧등에 반창고, 용 꼬리." },
+                    { label: "성격", desc: "평소에는 하찮고 귀여운 잼민이지만, 방송 온에어 전환 시 폭발적인 텐션을 분출함." },
+                    { label: "특징", desc: "현란하고 찰진 사투리 기반 입담력. 어려 보여도 구독자 수백만을 보유한 대기업 스트리머." }
+                ],
+                quote: "아~ 행님덜~ 별풍선 9999개 후원 감사합니데이~! 오늘 리액션은 마왕성 3층 복도에서 꼬리로 윈드밀 돌기 드갑니다!"
+            }
+        };
+
+        // 초기 인트로 멘트 데이터베이스
+        const LoreChatScenarioRegistry = {
+            ciel: {
+                title: "시엘과 1:1 대화방",
+                text: "앗! 야야, 너 이것 좀 봐봐ㅋㅋㅋ 지금 난리 난 쇼츠 챌린지인데 대박이지 않냐? 나 이거 볼가 몰래 집무실에서 연습 중인데… 어라? 방금 스텝 꼬여서 마력 터지는 바람에 회의실에 폭설 내림;; 이벨린이 알면 나 진짜 잔소리 폭탄 맞는다ㅠ 제발 모른 척해줘, 알았지? 찡긋-★"
+            },
+            kobel: {
+                title: "코벨과 1:1 대화방",
+                text: "크큭… 칠흑의 심연에서 흘러나오는 이 마력의 오오라가 느껴지는가? 드디어 고결한... 한정판 아스타로트 황녀님의 도색 마감이 끝났다…! 앗, 야!! 문 세게 닫지 마!! 먼지 앉으면 내 한 달간의 영혼이 날아간단 말이야!! 아, 아니… 결계를 무단 침범하지 말라는 뜻이다… 크큭."
+            },
+            volga: {
+                title: "볼가와 1:1 대화방",
+                text: "비서실장 볼가입니다. 요청하신 성내 보안 감찰 결과 및 주간 업무 보고서를 작성 중입ㄴ...ㅣ....ㄷ....... ㅡ................. zzzZZZ....... zzz....... 아, 아닙니다.. 절대 업무 중 조는 행위는 하지 않습ㄴ....... (쿠울........) 규율에... 따...ㄹㅏ....... zzzZZ..."
+            },
+            ivelin: {
+                title: "이벨린과 1:1 대화방",
+                text: "마왕님이 또 쇼츠 유료 필터 질러놓으셔서 혈압 때문에 토마토 주스만 세 팩째 마시는 중입니다. 이번 지출 청구서는 흡혈귀의 명예를 걸고 반려입니다. 마왕성 예산이 장난인 줄 아시나 봅니다... 하아."
+            },
+            tuba: {
+                title: "투바와 1:1 대화방",
+                text: "캬~ 행님덜! 오늘 리액션은 마왕성 3층 복도에서 꼬리로 윈드밀 돌기 드갑니다ㅋㅋㅋ 방송 켜자마자 별풍선 10000개 후원 실화냐?! 채팅 치는 행님은 누구신데 사내 망으로 연락을 주셨대예?!"
+            }
+        };
+
+        // 유저 입력에 반응하는 캐릭터별 실시간 연속 답변 스크립트 풀
+        const InteractiveResponsePool = {
+            ciel: [
+                "오? 방금 내가 올린 피드에 댓글 단 사람 너냐? ㅋㅋㅋ 센스 개지리네 인정함! 하트 눌러드림 쾅쾅",
+                "아 맞다 볼가가 나 찾는 발소리 들린다;; 급하게 스마트폰 책상 서랍에 숨기는 중ㅋㅋㅋㅋ 야 나 자리 비우면 회의 가버렸다고 해줘 제발!",
+                "근데 너도 숏폼 챌린지 찍을 생각 없어? 내가 특별히 마왕권력으로 카메라 감독 프랑 시켜서 고화질 4K로 따줄 수 있는데 생각 있으면 톡 해~"
+            ],
+            kobel: [
+                "흥! 하찮은 존재가 이 몸의 어둠 메신저 채널을 이렇게 쉽게 들락날락하다니... (앗 핀셋 어디 갔지?! 악마 날개 파츠 붙여야 되는데 어딨냐고!!)",
+                "방금 내 말투가 평범했다고..? 크, 크큭... 오인한 것이다! 이것은 심연의 마족들이 소통할 때 쓰는 고대 텔레파시의 일종...!!",
+                "이봐, 만약 다음 한정판 피규어 추첨 응모에 네 이름을 빌려준다면... 내 특별히 심연의 권속 자리를 내어주마. 계약할 텐가?"
+            ],
+            volga: [
+                "보고... 계속하겠습니다....... 현재 마왕성의 보안 등급은........ zzzZZZ..... (쿠울..) .....아.. 죄송합니다. 잠들지 않았습니다. 보안 장비의 잔류 마력을 분석 중이었습니다....",
+                "......방금 보낸 메시지는 확인했ㅅ.....ㅡ........ㅂ......ㄴ......ㅣ...........ㄷ.......... zzz...... (쿠우울......) ...규...율... 준수....... 감찰........ zzzZZZ...",
+                "......제가... 눈꺼풀의 무게를... 이기지 못하고....... 무작위... 전원... 오프....... 수면 프로토콜 가동....... (툭)"
+            ],
+            ivelin: [
+                "그것보다 혹시 마왕님이 이번 주에 비품실에서 간식 대량으로 몰래 빼돌린 정황 보셨습니까? 잡히면 이번 달 쇼츠 전용 데이터 끊어버릴 겁니다.",
+                "하아, 제 영수증 정산 압박을 견디지 못하고 다들 도망치는 와중에 먼저 선톡을 다 주시고... 당신은 참 용감한 분이군요. 예산 삭감 제안서 양식 필요하십니까?",
+                "죄송하지만 사적인 잡담은 업무 시간에 사절입니다. 숫자가 1원이라도 틀리면 전 흡혈귀 본능보다 맑은 정신의 회계 광인이 되니까요. 토마토 주스나 마저 마셔야겠습니다."
+            ],
+            tuba: [
+                "와!! 행님덜 방금 채팅창 보셨지예?! 대박 사건ㅋㅋㅋㅋ 행님도 내 방송 구독이랑 알림 설정은 박아두고 사내 대화 치는 기지요?! 얼른 대답해보이소!",
+                "에이~ 장난치지 마이소! 마왕성 지하에 진짜 드래곤이 산다 카는 소문은 구라입니데이. 거기는 그냥 프랑 팀장이 고장 난 에어컨 박아두는 창고라니까예!",
+                "오케이! 오늘 방송 미션은 행님이 준 멘트로 리액션 간다!! 별풍선 안 쏘면 꼬리로 뺨때기 매운맛 들어가니까 긴장 단단히 하이소 행님아! ㅋㅋㅋ"
+            ]
+        };
+
+        function executeGateOpen() {
+            const gate = document.getElementById('intro-gate');
+            const dashboard = document.getElementById('main-dashboard');
+            
+            gate.classList.add('fade-out');
+            dashboard.classList.add('active');
+
+            audioObject.volume = 0.5;
+            
+            audioObject.play().then(() => {
+                audioStateBtn.textContent = "⏸";
+            }).catch(error => {
+                console.log("오디오 재생 보류:", error);
+                audioStateBtn.textContent = "▶";
+            });
+        }
+
+        function adjustBgmVolume(val) {
+            audioObject.volume = val;
+        }
+
+        function toggleBgmPlayState() {
+            if (audioObject.paused) {
+                audioObject.play();
+                audioStateBtn.textContent = "⏸";
+            } else {
+                audioObject.pause();
+                audioStateBtn.textContent = "▶";
+            }
+        }
+
+        function switchDashboardPanel(event, targetPanelId) {
+            const panels = document.querySelectorAll('.view-panel');
+            panels.forEach(p => p.classList.remove('active'));
+
+            const tabButtons = document.querySelectorAll('.menu-tab-btn');
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(targetPanelId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // 메신저 방 열기
+        function openLiveMessenger(id) {
+            const scenario = LoreChatScenarioRegistry[id];
+            const charInfo = GlobalCastleRegistry[id];
+            if (!scenario || !charInfo) return;
+
+            if (currentTypingTimer) clearInterval(currentTypingTimer);
+            activeCharacterId = id; // 현재 대화 상대 고정
+
+            const overlay = document.getElementById('messenger-modal-overlay');
+            const headerTitle = document.getElementById('msg-header-title');
+            const chatArea = document.getElementById('msg-chat-area-node');
+
+            headerTitle.textContent = `💬 ${scenario.title}`;
+            
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+
+            chatArea.innerHTML = `
+                <div class="chat-msg-item">
+                    <img src="${charInfo.imgSrc}" class="chat-room-avatar" alt="${charInfo.name}">
+                    <div class="chat-room-content">
+                        <div class="chat-room-sender">${charInfo.name} [${charInfo.dept.split('/')[0].trim()}]</div>
+                        <div class="chat-bubble-row">
+                            <div class="chat-room-bubble typing" id="target-typing-bubble"></div>
+                            <span class="chat-room-time">${timeStr}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            overlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            document.getElementById('msg-user-input').focus();
+
+            const targetBubble = document.getElementById('target-typing-bubble');
+            const fullText = scenario.text;
+            let charIndex = 0;
+
+            currentTypingTimer = setInterval(() => {
+                if (charIndex < fullText.length) {
+                    targetBubble.textContent += fullText.charAt(charIndex);
+                    charIndex++;
+                    chatArea.scrollTop = chatArea.scrollHeight;
+                } else {
+                    clearInterval(currentTypingTimer);
+                    targetBubble.classList.remove('typing');
+                }
+            }, 30);
+        }
+
+        // 유저 메시지 전송 로직
+        function submitUserMessage() {
+            const inputNode = document.getElementById('msg-user-input');
+            const text = inputNode.value.trim();
+            if (!text || !activeCharacterId) return;
+
+            const chatArea = document.getElementById('msg-chat-area-node');
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+
+            // 1. 유저 말풍선 인터페이스 추가 (오른쪽 정렬)
+            const userMsgHtml = `
+                <div class="chat-msg-item user-side">
+                    <div class="chat-room-content">
+                        <div class="chat-bubble-row">
+                            <div class="chat-room-bubble">${text}</div>
+                            <span class="chat-room-time">${timeStr}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatArea.insertAdjacentHTML('beforeend', userMsgHtml);
+            inputNode.value = "";
+            chatArea.scrollTop = chatArea.scrollHeight;
+
+            // 2. 캐릭터의 타이핑 응답 이벤트 대기 유도
+            setTimeout(() => {
+                renderCharacterReply();
+            }, 800);
+        }
+
+        // 엔터키 전송 처리
+        function handleChatKeyDown(event) {
+            if (event.key === 'Enter') {
+                submitUserMessage();
+            }
+        }
+
+        // 캐릭터 가상 답변 출력 엔진
+        function renderCharacterReply() {
+            if (!activeCharacterId) return;
+            if (currentTypingTimer) clearInterval(currentTypingTimer);
+
+            const chatArea = document.getElementById('msg-chat-area-node');
+            const charInfo = GlobalCastleRegistry[activeCharacterId];
+            const pool = InteractiveResponsePool[activeCharacterId];
+            
+            // 풀 한도를 초과하면 계속 마지막 답변 순환 리플레이
+            let index = responseTrackers[activeCharacterId];
+            if (index >= pool.length) {
+                index = pool.length - 1;
+            }
+            const replyText = pool[index];
+            responseTrackers[activeCharacterId]++; // 다음 인덱스로 시프트
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+            const bubbleId = `reply-bubble-${Date.now()}`;
+
+            const botMsgHtml = `
+                <div class="chat-msg-item">
+                    <img src="${charInfo.imgSrc}" class="chat-room-avatar" alt="${charInfo.name}">
+                    <div class="chat-room-content">
+                        <div class="chat-room-sender">${charInfo.name} [${charInfo.dept.split('/')[0].trim()}]</div>
+                        <div class="chat-bubble-row">
+                            <div class="chat-room-bubble typing" id="${bubbleId}"></div>
+                            <span class="chat-room-time">${timeStr}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatArea.insertAdjacentHTML('beforeend', botMsgHtml);
+            chatArea.scrollTop = chatArea.scrollHeight;
+
+            const targetBubble = document.getElementById(bubbleId);
+            let charIndex = 0;
+
+            currentTypingTimer = setInterval(() => {
+                if (charIndex < replyText.length) {
+                    targetBubble.textContent += replyText.charAt(charIndex);
+                    charIndex++;
+                    chatArea.scrollTop = chatArea.scrollHeight;
+                } else {
+                    clearInterval(currentTypingTimer);
+                    targetBubble.classList.remove('typing');
+                }
+            }, 30);
+        }
+
+        function closeMessengerModal() {
+            if (currentTypingTimer) clearInterval(currentTypingTimer);
+            document.getElementById('messenger-modal-overlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            activeCharacterId = null;
+        }
+
+        function launchDetailModal(key) {
+            const character = GlobalCastleRegistry[key];
+            if (!character) return;
+
+            const imgContainer = document.getElementById('modal-target-img-wrap');
+            const dataContainer = document.getElementById('modal-target-data-wrap');
+
+            imgContainer.innerHTML = `<img src="${character.imgSrc}" alt="${character.name}">`;
+
+            let specHtml = character.specs.map(item => `
+                <li>
+                    <span class="label">${item.label}</span>
+                    <span class="desc">${item.desc}</span>
+                </li>
+            `).join('');
+
+            dataContainer.innerHTML = `
+                <div class="modal-header-section">
+                    <p class="modal-dept-label">${character.dept}</p>
+                    <h2 class="modal-char-name">${character.name}</h2>
+                </div>
+                <ul class="modal-specs-list">
+                    ${specHtml}
+                </ul>
+                <div class="modal-quote-box">"${character.quote}"</div>
+            `;
+
+            document.getElementById('detail-modal-overlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detail-modal-overlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+</html>
