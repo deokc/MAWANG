@@ -4,51 +4,123 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마맘마마마 마왕님! - 공식 대시보드</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;700;900&family=Cinzel+Decorative:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Black+Han Sans&family=Noto+Sans+KR:wght=300;400;700;900&display=swap');
-        
         :root {
-            --bg-black: #000000;
-            --bg-dark: #090a0f;
-            --bg-card: #12141c;
-            --bg-card-hover: #1a1d2a;
-            --accent-red: #f14040;
-            --accent-yellow: #ffca28;
-            --text-main: #ffffff;
-            --text-muted: #7c8394;
-            --border-color: rgba(255, 255, 255, 0.06);
-            --messenger-bg: #0e1017;
+            --void: #04030a;
+            --deep: #080614;
+            --mid: #100d1e;
+            --surface: #18142d;
+            --card: #1e1a35;
+            --card-hover: #251f40;
+            --crimson: #c8223a;
+            --crimson-glow: rgba(200, 34, 58, 0.25);
+            --crimson-dim: rgba(200, 34, 58, 0.08);
+            --amber: #e8a820;
+            --amber-glow: rgba(232, 168, 32, 0.2);
+            --violet: #7b4bb0;
+            --violet-light: #a67fd4;
+            --ghost: rgba(255,255,255,0.06);
+            --ghost-border: rgba(255,255,255,0.08);
+            --text-bright: #f0eaf8;
+            --text-mid: #a89ec2;
+            --text-dim: #5a5070;
+            --rune-size: 1px;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Noto Sans KR', sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background-color: var(--bg-black);
-            color: var(--text-main);
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: var(--void);
+            color: var(--text-bright);
             min-height: 100vh;
             overflow-x: hidden;
+            cursor: default;
         }
 
-        /* 인트로 게이트 */
+        /* ═══════════════════════════════════════
+           BACKGROUND ATMOSPHERE
+        ═══════════════════════════════════════ */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 15% 20%, rgba(123,75,176,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 35% at 85% 75%, rgba(200,34,58,0.1) 0%, transparent 55%),
+                radial-gradient(ellipse 80% 60% at 50% 100%, rgba(16,13,30,0.9) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ═══════════════════════════════════════
+           RUNE DECORATION PATTERN
+        ═══════════════════════════════════════ */
+        .rune-grid {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.04;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(200,34,58,0.5) 59px, rgba(200,34,58,0.5) 60px),
+                repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(200,34,58,0.5) 59px, rgba(200,34,58,0.5) 60px);
+        }
+
+        /* ═══════════════════════════════════════
+           INTRO GATE
+        ═══════════════════════════════════════ */
         #intro-gate {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg-black);
+            inset: 0;
+            z-index: 9999;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
-            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
-            padding: 20px;
+            background: var(--void);
+            transition: opacity 0.8s ease, visibility 0.8s;
+            overflow: hidden;
+        }
+
+        #intro-gate::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 50% 50%, rgba(123,75,176,0.15) 0%, transparent 65%);
+        }
+
+        #intro-gate::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border: 1px solid rgba(200,34,58,0.15);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: runeRing 12s linear infinite;
+        }
+
+        .intro-ring-2 {
+            position: absolute;
+            width: 420px;
+            height: 420px;
+            border: 1px solid rgba(123,75,176,0.12);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: runeRing 8s linear infinite reverse;
+        }
+
+        @keyframes runeRing {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
         #intro-gate.fade-out {
@@ -56,69 +128,117 @@
             visibility: hidden;
         }
 
+        .intro-seal {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .intro-eyebrow {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: clamp(0.6rem, 1.2vw, 0.85rem);
+            letter-spacing: 8px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 28px;
+            animation: fadeUp 1s ease 0.2s both;
+        }
+
         .intro-title-wrapper {
             font-family: 'Black Han Sans', sans-serif;
             text-align: center;
-            line-height: 1.05;
-            letter-spacing: -2px;
-            margin-bottom: 20px;
+            line-height: 1;
+            margin-bottom: 16px;
             user-select: none;
+            animation: fadeUp 1s ease 0.4s both;
         }
 
         .title-row-top {
-            font-size: clamp(3.5rem, 8vw, 6.5rem);
-            color: #ffffff;
-            margin-bottom: 10px;
+            font-size: clamp(3rem, 7vw, 5.5rem);
+            color: var(--text-bright);
+            display: block;
+            margin-bottom: 6px;
         }
 
         .title-row-bottom {
-            font-size: clamp(5.5rem, 14vw, 11rem);
+            font-size: clamp(5rem, 12vw, 9.5rem);
             display: flex;
             justify-content: center;
-            gap: 5px;
+            gap: 4px;
         }
 
-        .color-red { color: var(--accent-red); }
-        .color-yellow { color: var(--accent-yellow); }
+        .color-red { color: var(--crimson); }
+        .color-yellow { color: var(--amber); }
         .color-white { color: #ffffff; }
 
         .intro-subtitle {
-            color: var(--text-muted);
-            font-size: clamp(1rem, 2vw, 1.3rem);
-            letter-spacing: 6px;
-            margin-top: 20px;
+            font-size: clamp(0.85rem, 1.8vw, 1.05rem);
+            letter-spacing: 4px;
+            color: var(--text-dim);
             font-weight: 300;
-            text-transform: uppercase;
-            text-align: center;
+            margin-top: 18px;
+            animation: fadeUp 1s ease 0.6s both;
         }
 
         .enter-castle-btn {
+            position: relative;
             background: transparent;
-            border: 3px solid #ffffff;
-            color: #ffffff;
-            padding: 18px 70px;
-            font-size: 1.3rem;
-            font-weight: 900;
-            letter-spacing: 4px;
+            border: none;
+            color: var(--text-bright);
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 6px;
             cursor: pointer;
-            margin-top: 60px;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            margin-top: 56px;
+            padding: 20px 60px;
+            animation: fadeUp 1s ease 0.8s both;
+            transition: all 0.4s ease;
+            z-index: 2;
+        }
+
+        .enter-castle-btn::before,
+        .enter-castle-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(200,34,58,0.5);
+            transition: all 0.4s ease;
+        }
+
+        .enter-castle-btn::after {
+            border-color: rgba(123,75,176,0.4);
+            transform: translate(5px, 5px);
         }
 
         .enter-castle-btn:hover {
-            background: #ffffff;
-            color: #000000;
-            box-shadow: 0 0 30px rgba(255,255,255,0.2);
-            transform: translateY(-4px);
+            color: #fff;
+            letter-spacing: 8px;
         }
 
-        /* 메인 대시보드 구조 */
+        .enter-castle-btn:hover::before {
+            border-color: var(--crimson);
+            box-shadow: 0 0 20px var(--crimson-glow), inset 0 0 20px var(--crimson-dim);
+        }
+
+        .enter-castle-btn:hover::after {
+            transform: translate(8px, 8px);
+            border-color: var(--violet);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ═══════════════════════════════════════
+           MAIN DASHBOARD
+        ═══════════════════════════════════════ */
         #main-dashboard {
             opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
-            background-color: var(--bg-dark);
-            min-height: 100vh;
+            transform: translateY(20px);
+            transition: opacity 0.9s ease, transform 0.9s ease;
+            position: relative;
+            z-index: 1;
         }
 
         #main-dashboard.active {
@@ -126,82 +246,193 @@
             transform: translateY(0);
         }
 
-        .global-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 25px 40px;
-            background-color: rgba(9, 10, 15, 0.85);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--border-color);
+        /* ═══════════════════════════════════════
+           SIDEBAR NAVIGATION (vertical left bar)
+        ═══════════════════════════════════════ */
+        .layout-shell {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            grid-template-rows: auto 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            grid-column: 1;
+            grid-row: 1 / 3;
+            background: linear-gradient(180deg, var(--deep) 0%, var(--mid) 100%);
+            border-right: 1px solid var(--ghost-border);
             position: sticky;
             top: 0;
-            z-index: 100;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .header-brand {
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--crimson), var(--violet), transparent);
+        }
+
+        .sidebar::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                180deg,
+                transparent,
+                transparent 80px,
+                rgba(200,34,58,0.015) 80px,
+                rgba(200,34,58,0.015) 81px
+            );
+            pointer-events: none;
+        }
+
+        .sidebar-brand {
+            padding: 32px 28px 24px;
+            border-bottom: 1px solid var(--ghost-border);
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-eyebrow {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 0.55rem;
+            letter-spacing: 4px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .brand-title {
             font-family: 'Black Han Sans', sans-serif;
-            font-size: 1.8rem;
-            letter-spacing: -0.5px;
-            user-select: none;
+            font-size: 1.4rem;
+            line-height: 1.2;
             display: flex;
-            align-items: center;
-            gap: 6px;
+            flex-wrap: wrap;
+            gap: 2px;
         }
 
-        .header-right-side {
-            display: flex;
-            align-items: center;
-            gap: 30px;
+        .sidebar-nav {
+            padding: 20px 0;
+            flex: 1;
+            position: relative;
+            z-index: 1;
         }
 
-        .tab-menu-group {
-            display: flex;
-            gap: 10px;
+        .nav-section-label {
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            padding: 0 28px;
+            margin: 16px 0 8px;
         }
 
         .menu-tab-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1rem;
-            font-weight: 700;
-            padding: 12px 26px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .menu-tab-btn:hover { color: #fff; }
-
-        .menu-tab-btn.active {
-            color: #000000;
-            background-color: #ffffff;
-            font-weight: 900;
-        }
-
-        /* BGM 오디오 컨트롤러 */
-        .audio-controller-widget {
             display: flex;
             align-items: center;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.04);
-            padding: 8px 16px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            gap: 14px;
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--text-mid);
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            padding: 14px 28px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: left;
+            position: relative;
         }
 
-        .bgm-label {
-            font-size: 0.8rem;
+        .menu-tab-btn .nav-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .menu-tab-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: var(--crimson);
+            transition: width 0.25s ease;
+        }
+
+        .menu-tab-btn:hover {
+            color: var(--text-bright);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .menu-tab-btn.active {
+            color: #fff;
+            background: linear-gradient(90deg, var(--crimson-dim), transparent);
+        }
+
+        .menu-tab-btn.active::before {
+            width: 3px;
+        }
+
+        /* BGM Widget in sidebar */
+        .sidebar-audio {
+            padding: 20px 28px;
+            border-top: 1px solid var(--ghost-border);
+            position: relative;
+            z-index: 1;
+        }
+
+        .audio-label-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .audio-label-text {
+            font-size: 0.65rem;
             font-weight: 700;
-            color: var(--text-muted);
-            letter-spacing: 1px;
+            letter-spacing: 3px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .audio-toggle-btn {
+            background: rgba(200,34,58,0.15);
+            border: 1px solid rgba(200,34,58,0.3);
+            color: var(--crimson);
+            cursor: pointer;
+            font-size: 0.8rem;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .audio-toggle-btn:hover {
+            background: rgba(200,34,58,0.3);
         }
 
         .volume-slider {
             -webkit-appearance: none;
-            width: 80px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.08);
             border-radius: 2px;
             outline: none;
             cursor: pointer;
@@ -212,215 +443,669 @@
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: #ffffff;
-            transition: transform 0.1s;
+            background: var(--crimson);
+            box-shadow: 0 0 6px var(--crimson-glow);
+            transition: transform 0.15s;
         }
 
         .volume-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
+            transform: scale(1.3);
         }
 
-        .audio-toggle-btn {
-            background: none;
-            border: none;
-            color: #ffffff;
-            cursor: pointer;
-            font-size: 0.9rem;
+        /* ═══════════════════════════════════════
+           TOP HEADER (right side)
+        ═══════════════════════════════════════ */
+        .top-bar {
+            grid-column: 2;
+            grid-row: 1;
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--ghost-border);
+            background: rgba(8, 6, 20, 0.6);
+            backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
-            justify-content: center;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            transition: background 0.2s;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
         }
 
-        .audio-toggle-btn:hover {
-            background: rgba(255,255,255,0.1);
+        .top-bar-breadcrumb {
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-weight: 700;
         }
 
-        .main-container {
-            max-width: 1400px;
-            margin: 40px auto;
-            padding: 0 24px;
-            padding-bottom: 100px;
+        .top-bar-breadcrumb span {
+            color: var(--crimson);
+        }
+
+        .weather-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(232,168,32,0.06);
+            border: 1px solid rgba(232,168,32,0.15);
+            padding: 6px 14px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            color: var(--amber);
+            font-weight: 700;
+            letter-spacing: 1px;
+            animation: ambientBlink 3s ease-in-out infinite;
+        }
+
+        @keyframes ambientBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* ═══════════════════════════════════════
+           MAIN CONTENT AREA
+        ═══════════════════════════════════════ */
+        .main-content {
+            grid-column: 2;
+            grid-row: 2;
+            padding: 40px;
+            min-height: calc(100vh - 65px);
         }
 
         .view-panel {
             display: none;
-            animation: panelFadeIn 0.5s ease forwards;
+            animation: panelReveal 0.5s ease forwards;
         }
 
         .view-panel.active { display: block; }
 
-        @keyframes panelFadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes panelReveal {
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 세계관 영역 (LORE) */
-        .lore-grid {
+        /* ═══════════════════════════════════════
+           PANEL HEADER
+        ═══════════════════════════════════════ */
+        .panel-headline {
+            margin-bottom: 36px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .panel-headline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: 4px;
+            width: 3px;
+            background: linear-gradient(180deg, var(--crimson), var(--violet));
+        }
+
+        .panel-headline h1 {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 2rem;
+            font-weight: 400;
+            color: var(--text-bright);
+            line-height: 1.2;
+        }
+
+        .panel-headline p {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            margin-top: 6px;
+            text-transform: uppercase;
+        }
+
+        /* ═══════════════════════════════════════
+           LORE PANEL — ASYMMETRIC BENTO LAYOUT
+        ═══════════════════════════════════════ */
+        .bento-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            grid-template-rows: auto auto auto;
+            gap: 16px;
         }
 
-        .lore-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 35px;
-            border-radius: 12px;
+        /* Card base */
+        .bento-card {
+            background: var(--card);
+            border: 1px solid var(--ghost-border);
             position: relative;
             overflow: hidden;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .lore-card-img {
+        .bento-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 20px,
+                rgba(123,75,176,0.012) 20px,
+                rgba(123,75,176,0.012) 21px
+            );
+            pointer-events: none;
+        }
+
+        .bento-card:hover {
+            border-color: rgba(200,34,58,0.2);
+            box-shadow: 0 0 30px rgba(200,34,58,0.06);
+        }
+
+        /* Card inner corner decoration */
+        .bento-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, transparent 50%, rgba(200,34,58,0.08) 50%);
+        }
+
+        /* CARD 1 — Nebulheim (tall, left column) */
+        .card-nebulheim {
+            grid-column: 1;
+            grid-row: 1 / 3;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-img-banner {
             width: 100%;
-            height: 200px;
+            height: 240px;
             object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: block;
+            border-bottom: 1px solid var(--ghost-border);
+            filter: brightness(0.85) saturate(0.9);
+            transition: filter 0.4s ease;
         }
 
-        .lore-card h2 {
-            font-family: 'Black Han Sans', sans-serif;
-            font-size: 2.1rem;
-            margin-bottom: 15px;
-            font-weight: 400;
+        .bento-card:hover .card-img-banner {
+            filter: brightness(0.95) saturate(1);
         }
 
-        .lore-card p {
-            color: #b2b9c7;
-            line-height: 1.8;
-            font-size: 1.05rem;
-            margin-bottom: 15px;
+        .card-body {
+            padding: 28px 32px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
-        .lore-status-badge {
+        .card-status {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             font-weight: 900;
-            padding: 6px 12px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
+            padding: 5px 10px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
+            border-radius: 2px;
+            margin-bottom: 16px;
+            width: fit-content;
         }
 
-        .lore-status-badge.stable {
-            background: rgba(76, 175, 80, 0.1);
-            color: #4caf50;
-            border: 1px solid rgba(76, 175, 80, 0.2);
+        .card-status.stable {
+            background: rgba(76,175,80,0.08);
+            color: #6dbf70;
+            border: 1px solid rgba(76,175,80,0.2);
         }
 
-        .lore-status-badge.warning {
-            background: rgba(241, 64, 64, 0.1);
-            color: var(--accent-red);
-            border: 1px solid rgba(241, 64, 64, 0.2);
-            animation: systemBlink 1.5s infinite ease-in-out;
+        .card-status.warning {
+            background: rgba(200,34,58,0.08);
+            color: var(--crimson);
+            border: 1px solid rgba(200,34,58,0.25);
+            animation: statusPulse 2s ease-in-out infinite;
         }
 
-        @keyframes systemBlink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; box-shadow: none; }
+            50% { opacity: 0.75; box-shadow: 0 0 8px var(--crimson-glow); }
         }
 
-        .lore-meta-panel {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 25px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 20px;
-        }
-
-        .lore-meta-item {
-            background: rgba(255, 255, 255, 0.02);
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.02);
-        }
-
-        .lore-meta-item .item-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-weight: 700;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .lore-meta-item .item-value {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: #ffffff;
-        }
-
-        /* 인트라넷 채널 섹션 */
-        .lore-chat-section {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 40px;
-            border-radius: 12px;
-            margin-top: 40px;
-        }
-
-        .lore-chat-section h3 {
+        .card-title {
             font-family: 'Black Han Sans', sans-serif;
-            font-size: 1.8rem;
+            font-size: 1.7rem;
             font-weight: 400;
-            margin-bottom: 8px;
+            color: var(--text-bright);
+            margin-bottom: 14px;
+            line-height: 1.2;
+        }
+
+        .card-body p {
+            color: var(--text-mid);
+            line-height: 1.85;
+            font-size: 0.92rem;
+            margin-bottom: 12px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid var(--ghost-border);
+        }
+
+        .meta-item {
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.03);
+            border-radius: 2px;
+        }
+
+        .meta-label {
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .meta-value {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text-bright);
+        }
+
+        /* CARD 2 — Tempesta (right column, top) */
+        .card-tempesta {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        /* CARD 3 — Chat Channel (right column, bottom or full width) */
+        .card-chat {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        /* CARD 4 — Intranet full width */
+        .card-intranet {
+            grid-column: 1 / 3;
+            grid-row: 3;
+        }
+
+        .intranet-inner {
+            padding: 28px 32px;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .intranet-left {
+            flex-shrink: 0;
+        }
+
+        .intranet-title {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: var(--text-bright);
+            margin-bottom: 6px;
+        }
+
+        .intranet-desc {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .intranet-divider {
+            width: 1px;
+            height: 50px;
+            background: var(--ghost-border);
+            flex-shrink: 0;
         }
 
         .lore-icons-row {
             display: flex;
-            gap: 14px;
+            gap: 10px;
             flex-wrap: wrap;
-            margin: 25px 0 10px 0;
+            flex: 1;
         }
 
         .lore-mini-icon-btn {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-color);
-            padding: 12px 24px;
-            border-radius: 40px;
-            color: #ffffff;
-            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            background: rgba(255,255,255,0.025);
+            border: 1px solid var(--ghost-border);
+            color: var(--text-mid);
+            cursor: pointer;
+            padding: 10px 18px;
+            border-radius: 2px;
+            font-family: 'Noto Sans KR', sans-serif;
             font-weight: 700;
-            font-size: 0.95rem;
-            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            font-size: 0.88rem;
+            transition: all 0.25s ease;
         }
 
         .lore-mini-icon-btn img {
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             object-fit: cover;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.08);
+            filter: grayscale(20%);
+            transition: filter 0.25s ease;
         }
 
         .lore-mini-icon-btn:hover {
-            background-color: #ffffff;
-            color: #000000;
-            border-color: #ffffff;
-            transform: scale(1.04);
+            background: var(--crimson-dim);
+            border-color: rgba(200,34,58,0.35);
+            color: #fff;
         }
 
-        /* 독립 메신저 모달 팝업 구조 스타일 */
-        #messenger-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .lore-mini-icon-btn:hover img {
+            filter: grayscale(0%);
+            border-color: var(--crimson);
+        }
+
+        /* ═══════════════════════════════════════
+           CHARACTERS PANEL — HORIZONTAL SCROLL DECK
+        ═══════════════════════════════════════ */
+        .char-deck-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            padding-bottom: 16px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(200,34,58,0.3) transparent;
+        }
+
+        .char-deck-wrapper::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .char-deck-wrapper::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .char-deck-wrapper::-webkit-scrollbar-thumb {
+            background: rgba(200,34,58,0.3);
+            border-radius: 2px;
+        }
+
+        .characters-grid {
+            display: grid;
+            grid-auto-flow: column;
+            grid-template-rows: repeat(2, 1fr);
+            grid-auto-columns: 280px;
+            gap: 14px;
+            width: max-content;
+            padding: 4px;
+        }
+
+        .summary-char-card {
+            background: var(--card);
+            border: 1px solid var(--ghost-border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .summary-char-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 60%, var(--crimson-dim));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .summary-char-card:hover::before {
+            opacity: 1;
+        }
+
+        .summary-char-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(200,34,58,0.3);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 15px rgba(200,34,58,0.08);
+        }
+
+        .card-img-holder {
+            width: 100%;
+            aspect-ratio: 1/1;
+            overflow: hidden;
+            position: relative;
+            background: var(--surface);
+        }
+
+        .card-img-holder img {
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
+            object-fit: cover;
+            object-position: top;
+            transition: transform 0.5s ease;
+            display: block;
+        }
+
+        .summary-char-card:hover .card-img-holder img {
+            transform: scale(1.06);
+        }
+
+        /* Gradient overlay on image */
+        .card-img-holder::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(transparent, var(--card));
+            pointer-events: none;
+        }
+
+        .card-brief-info {
+            padding: 14px 16px 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .brief-dept {
+            font-size: 0.6rem;
+            color: var(--amber);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .brief-name {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: var(--text-bright);
+            margin-bottom: 2px;
+        }
+
+        .brief-meta {
+            font-size: 0.72rem;
+            color: var(--text-dim);
+        }
+
+        .view-more-action {
+            font-size: 0.6rem;
+            color: var(--crimson);
+            opacity: 0;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 8px;
+            transition: opacity 0.2s;
+        }
+
+        .summary-char-card:hover .view-more-action {
+            opacity: 1;
+        }
+
+        /* ═══════════════════════════════════════
+           DETAIL MODAL
+        ═══════════════════════════════════════ */
+        #detail-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(4,3,10,0.92);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-container {
+            background: var(--mid);
+            border: 1px solid rgba(200,34,58,0.2);
+            width: 100%;
+            max-width: 920px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            display: grid;
+            grid-template-columns: 42% 1fr;
+            box-shadow: 0 0 80px rgba(200,34,58,0.1), 0 30px 60px rgba(0,0,0,0.7);
+            animation: modalOpen 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--crimson), var(--violet), var(--crimson));
+        }
+
+        @keyframes modalOpen {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-img-side {
+            position: relative;
+            overflow: hidden;
+            background: var(--surface);
+        }
+
+        .modal-img-side img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            display: block;
+        }
+
+        .modal-data-side {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .modal-close-trigger {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(200,34,58,0.1);
+            border: 1px solid rgba(200,34,58,0.3);
+            color: var(--crimson);
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+            border-radius: 2px;
+        }
+
+        .modal-close-trigger:hover {
+            background: var(--crimson);
+            color: #fff;
+        }
+
+        .modal-header-section {
+            border-bottom: 1px solid var(--ghost-border);
+            padding-bottom: 20px;
+            margin-bottom: 24px;
+        }
+
+        .modal-dept-label {
+            font-size: 0.7rem;
+            color: var(--crimson);
+            font-weight: 700;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .modal-char-name {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 400;
+            color: var(--text-bright);
+        }
+
+        .modal-specs-list {
+            list-style: none;
+            font-size: 0.92rem;
+            margin-bottom: 28px;
+        }
+
+        .modal-specs-list li {
+            margin-bottom: 12px;
+            line-height: 1.7;
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-specs-list .label {
+            color: var(--text-dim);
+            min-width: 60px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding-top: 3px;
+        }
+
+        .modal-specs-list .desc {
+            color: var(--text-mid);
+            flex: 1;
+        }
+
+        .modal-quote-box {
+            background: linear-gradient(135deg, rgba(200,34,58,0.06), rgba(123,75,176,0.04));
+            border-left: 3px solid var(--crimson);
+            padding: 16px 20px;
+            font-style: italic;
+            font-size: 0.92rem;
+            color: var(--text-mid);
+            line-height: 1.7;
+        }
+
+        /* ═══════════════════════════════════════
+           MESSENGER MODAL
+        ═══════════════════════════════════════ */
+        #messenger-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(4,3,10,0.8);
+            backdrop-filter: blur(10px);
             z-index: 2000;
             display: none;
             justify-content: center;
@@ -429,17 +1114,27 @@
         }
 
         .messenger-window {
-            background-color: #151722;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 16px;
+            background: var(--deep);
+            border: 1px solid var(--ghost-border);
             width: 100%;
-            max-width: 480px;
-            height: 640px;
+            max-width: 460px;
+            height: 600px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-            animation: messengerOpen 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            box-shadow: 0 0 60px rgba(200,34,58,0.12), 0 20px 40px rgba(0,0,0,0.6);
+            animation: messengerOpen 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .messenger-window::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--crimson), var(--violet));
         }
 
         @keyframes messengerOpen {
@@ -448,12 +1143,12 @@
         }
 
         .messenger-header {
-            background: #1c1f2f;
-            padding: 18px 24px;
-            font-size: 1rem;
+            background: var(--mid);
+            padding: 16px 22px;
+            font-size: 0.9rem;
             font-weight: 700;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            color: #ffffff;
+            border-bottom: 1px solid var(--ghost-border);
+            color: var(--text-bright);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -463,52 +1158,53 @@
         .messenger-close-btn {
             background: none;
             border: none;
-            color: var(--text-muted);
-            font-size: 1.4rem;
+            color: var(--text-dim);
+            font-size: 1.3rem;
             cursor: pointer;
             transition: color 0.2s;
             line-height: 1;
         }
 
-        .messenger-close-btn:hover { color: #fff; }
+        .messenger-close-btn:hover { color: var(--text-bright); }
 
         .messenger-chat-area {
-            padding: 24px;
+            padding: 20px;
             flex: 1;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            background-color: var(--messenger-bg);
+            gap: 18px;
+            background: #060410;
             scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(200,34,58,0.2) transparent;
         }
 
         .chat-msg-item {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: flex-start;
-            max-width: 90%;
+            max-width: 88%;
         }
 
-        /* 유저 보낸 방향 정열 */
         .chat-msg-item.user-side {
             align-self: flex-end;
             flex-direction: row-reverse;
         }
 
         .chat-room-avatar {
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             object-fit: cover;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(200,34,58,0.3);
             flex-shrink: 0;
         }
 
         .chat-room-content {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
         }
 
         .chat-msg-item.user-side .chat-room-content {
@@ -516,15 +1212,16 @@
         }
 
         .chat-room-sender {
-            font-size: 0.85rem;
-            color: #8a92a6;
+            font-size: 0.72rem;
+            color: var(--text-dim);
             font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         .chat-bubble-row {
             display: flex;
             align-items: flex-end;
-            gap: 8px;
+            gap: 6px;
         }
 
         .chat-msg-item.user-side .chat-bubble-row {
@@ -532,29 +1229,28 @@
         }
 
         .chat-room-bubble {
-            background-color: #222638;
-            color: #e1e7f5;
-            padding: 14px 18px;
-            border-radius: 0px 16px 16px 16px;
+            background: rgba(30,26,53,0.9);
+            border: 1px solid rgba(123,75,176,0.15);
+            color: var(--text-mid);
+            padding: 12px 16px;
+            border-radius: 0px 10px 10px 10px;
             line-height: 1.7;
-            font-size: 0.98rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            font-size: 0.9rem;
             word-break: break-all;
             position: relative;
         }
 
-        /* 유저 전용 말풍선 디자인 */
         .chat-msg-item.user-side .chat-room-bubble {
-            background-color: #3b4260;
-            color: #ffffff;
-            border-radius: 16px 0px 16px 16px;
+            background: rgba(200,34,58,0.12);
+            border-color: rgba(200,34,58,0.25);
+            color: var(--text-bright);
+            border-radius: 10px 0px 10px 10px;
         }
 
         .chat-room-bubble.typing::after {
             content: '|';
-            animation: cursorBlink 0.8s infinite;
-            font-weight: 100;
-            color: var(--accent-yellow);
+            animation: cursorBlink 0.75s infinite;
+            color: var(--amber);
             margin-left: 2px;
         }
 
@@ -564,581 +1260,476 @@
         }
 
         .chat-room-time {
-            font-size: 0.72rem;
-            color: #52596b;
+            font-size: 0.65rem;
+            color: #2d2840;
             white-space: nowrap;
-            user-select: none;
         }
 
-        /* 하단 입력 인터페이스 영역 */
         .messenger-footer-input-area {
-            background: #12141c;
-            padding: 14px 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            background: var(--mid);
+            padding: 12px 16px;
+            border-top: 1px solid var(--ghost-border);
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
         }
 
         .messenger-input-field {
             flex: 1;
-            background: #1c1f2f;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 12px 16px;
-            color: #ffffff;
-            font-size: 0.95rem;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--ghost-border);
+            border-radius: 3px;
+            padding: 10px 14px;
+            color: var(--text-bright);
+            font-size: 0.9rem;
             outline: none;
+            font-family: 'Noto Sans KR', sans-serif;
             transition: border-color 0.2s;
         }
 
         .messenger-input-field:focus {
-            border-color: var(--accent-red);
+            border-color: rgba(200,34,58,0.4);
         }
 
         .messenger-send-btn {
-            background-color: var(--accent-red);
-            color: #ffffff;
+            background: var(--crimson);
+            color: #fff;
             border: none;
-            border-radius: 8px;
-            padding: 12px 20px;
+            border-radius: 3px;
+            padding: 10px 18px;
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 0.88rem;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: background 0.2s;
+            font-family: 'Noto Sans KR', sans-serif;
         }
 
         .messenger-send-btn:hover {
-            background-color: #d32f2f;
+            background: #a01b2f;
         }
 
-        /* 등장인물 카드 영역 */
-        .characters-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-        }
+        /* ═══════════════════════════════════════
+           RESPONSIVE
+        ═══════════════════════════════════════ */
+        @media (max-width: 1024px) {
+            .layout-shell {
+                grid-template-columns: 220px 1fr;
+            }
 
-        .summary-char-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            position: relative;
-        }
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
 
-        .summary-char-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        }
-
-        .card-img-holder {
-            width: 100%;
-            position: relative;
-            padding-top: 100%;
-            background-color: #161822;
-            overflow: hidden;
-        }
-
-        .card-img-holder img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s ease;
-        }
-
-        .summary-char-card:hover .card-img-holder img {
-            transform: scale(1.05);
-        }
-
-        .card-brief-info {
-            padding: 24px;
-            text-align: center;
-            border-top: 1px solid rgba(255,255,255,0.02);
-        }
-
-        .brief-dept {
-            font-size: 0.8rem;
-            color: var(--accent-yellow);
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-        }
-
-        .brief-name {
-            font-family: 'Black Han Sans', sans-serif;
-            font-size: 1.7rem;
-            font-weight: 400;
-            margin-bottom: 8px;
-        }
-
-        .brief-meta {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .view-more-action {
-            margin-top: 15px;
-            font-size: 0.75rem;
-            color: #ffffff;
-            opacity: 0.4;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            transition: opacity 0.2s;
-        }
-
-        .summary-char-card:hover .view-more-action {
-            opacity: 1;
-            color: var(--accent-red);
-        }
-
-        /* 상세 정보 모달 */
-        #detail-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(15px);
-            z-index: 1000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-container {
-            background-color: #0e1017;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 100%;
-            max-width: 1000px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            align-items: stretch;
-        }
-
-        .modal-img-side {
-            width: 100%;
-            aspect-ratio: 1 / 1; 
-            background-color: #161822;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .modal-img-side img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .modal-data-side {
-            padding: 45px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .modal-close-trigger {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            background: none;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #fff;
-            padding: 8px 16px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            z-index: 10;
-        }
-
-        .modal-close-trigger:hover {
-            background-color: #fff;
-            color: #000;
-        }
-
-        .modal-header-section {
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            padding-bottom: 20px;
-            margin-bottom: 25px;
-        }
-
-        .modal-dept-label {
-            font-size: 0.9rem;
-            color: var(--accent-red);
-            font-weight: 700;
-            letter-spacing: 2px;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-
-        .modal-char-name {
-            font-family: 'Black Han Sans', sans-serif;
-            font-size: 3.2rem;
-            font-weight: 400;
-        }
-
-        .modal-specs-list {
-            list-style: none;
-            font-size: 1.05rem;
-            margin-bottom: 30px;
-        }
-
-        .modal-specs-list li {
-            margin-bottom: 14px;
-            line-height: 1.7;
-            display: flex;
-        }
-
-        .modal-specs-list .label {
-            color: var(--text-muted);
-            min-width: 75px;
-            font-weight: 700;
-            display: inline-block;
-        }
-
-        .modal-specs-list .desc {
-            color: #e3e9f5;
-            flex: 1;
-        }
-
-        .modal-quote-box {
-            margin-top: 20px;
-            background-color: rgba(255,255,255,0.03);
-            border-left: 4px solid #ffffff;
-            padding: 20px;
-            font-style: italic;
-            font-size: 1rem;
-            color: #d1d7e3;
-            line-height: 1.6;
-        }
-
-        /* -------------------------------------
-           모바일 반응형 (Media Queries) 추가 영역
-           ------------------------------------- */
-        @media (max-width: 900px) {
-            .lore-grid { grid-template-columns: 1fr; }
-            .header-right-side { flex-direction: column-reverse; gap: 15px; }
-        }
-
-        @media (max-width: 850px) {
-            .modal-container { grid-template-columns: 1fr; max-height: 95vh; }
-            .modal-img-side { aspect-ratio: auto; height: 300px; }
+            .card-nebulheim { grid-column: 1; grid-row: 1; }
+            .card-tempesta { grid-column: 1; grid-row: 2; }
+            .card-chat { grid-column: 1; grid-row: 3; }
+            .card-intranet { grid-column: 1; grid-row: 4; }
         }
 
         @media (max-width: 768px) {
-            /* 헤더 모바일 최적화 */
-            .global-header {
-                flex-direction: column;
-                padding: 15px 20px;
-                gap: 15px;
+            .layout-shell {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto 1fr;
             }
-            .header-brand {
-                font-size: 1.5rem;
+
+            .sidebar {
+                grid-column: 1;
+                grid-row: 1;
+                height: auto;
+                position: relative;
             }
-            .tab-menu-group {
-                width: 100%;
+
+            .sidebar-nav {
+                display: flex;
+                flex-direction: row;
                 overflow-x: auto;
-                white-space: nowrap;
-                padding-bottom: 5px; /* 스와이프 스크롤 여백 */
+                padding: 8px 12px;
             }
+
+            .nav-section-label { display: none; }
+
             .menu-tab-btn {
+                white-space: nowrap;
                 padding: 10px 16px;
-                font-size: 0.9rem;
+                flex-shrink: 0;
             }
 
-            /* 컨테이너 및 섹션 여백 최적화 */
-            .main-container {
-                padding: 0 15px;
-                margin: 20px auto;
+            .menu-tab-btn::before { display: none; }
+
+            .menu-tab-btn.active {
+                background: var(--crimson-dim);
+                border-bottom: 2px solid var(--crimson);
             }
-            .lore-card, .lore-chat-section {
+
+            .sidebar-audio {
+                display: none;
+            }
+
+            .top-bar {
+                grid-column: 1;
+                grid-row: 2;
+            }
+
+            .main-content {
+                grid-column: 1;
+                grid-row: 3;
                 padding: 20px;
             }
-            .lore-card h2 {
-                font-size: 1.6rem;
-            }
-            .lore-meta-panel {
-                grid-template-columns: 1fr; /* 메타데이터 1줄 정렬 */
-            }
-            .lore-icons-row {
-                justify-content: center;
-            }
-            .lore-mini-icon-btn {
-                width: 100%;
-                justify-content: center;
+
+            .bento-grid {
+                gap: 12px;
             }
 
-            /* 폰트 및 버튼 크기 조정 */
-            .title-row-top { font-size: 3rem; }
-            .title-row-bottom { font-size: 4.5rem; }
-            .enter-castle-btn {
-                padding: 15px 40px;
-                font-size: 1.1rem;
+            .card-body {
+                padding: 20px;
             }
 
-            /* 메신저 팝업 최적화 */
-            .messenger-window {
-                height: 85vh; /* 폰 화면 높이에 맞게 조절 */
-            }
-            .chat-room-bubble {
-                font-size: 0.9rem;
-                padding: 12px 14px;
+            .intranet-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+                padding: 20px;
             }
 
-            /* 캐릭터 상세 모달 최적화 */
+            .intranet-divider { display: none; }
+
+            .modal-container {
+                grid-template-columns: 1fr;
+                max-height: 95vh;
+            }
+
+            .modal-img-side {
+                height: 280px;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .modal-img-side img {
+                height: auto;
+                object-fit: unset;
+            }
+
             .modal-data-side {
-                padding: 20px;
+                padding: 24px;
             }
-            .modal-char-name {
-                font-size: 2.2rem;
+
+            .char-deck-wrapper {
+                overflow-x: visible;
+                padding-bottom: 0;
             }
-            .modal-specs-list {
-                font-size: 0.95rem;
-            }
-            .modal-specs-list li {
-                flex-direction: column; /* 라벨과 내용을 위아래로 배치 */
-                gap: 5px;
-            }
-            .modal-specs-list .label {
-                margin-bottom: 0;
-                color: var(--accent-red);
-            }
-            
-            /* 캐릭터 리스트 그리드 최적화 (2단 분리 방지) */
+
             .characters-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                gap: 16px;
+            }
+
+            .summary-char-card {
+                width: 100%;
+            }
+        }
+
+        /* ═══════════════════════════════════════
+           SCROLLBAR GLOBAL
+        ═══════════════════════════════════════ */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(200,34,58,0.2); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(200,34,58,0.4); }
+
+        /* ═══════════════════════════════════════
+           AUDIO HIDDEN MOBILE FALLBACK
+        ═══════════════════════════════════════ */
+        .mobile-audio-bar {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-audio-bar {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 16px;
+                background: var(--deep);
+                border-top: 1px solid var(--ghost-border);
+                order: 99;
             }
         }
     </style>
 </head>
 <body>
 
+    <div class="rune-grid"></div>
     <audio id="dashboard-bgm" src="https://raw.githubusercontent.com/deokc/MAWANG/main/Gargoyle%20Tea%20Room_01.mp3" loop></audio>
 
+    <!-- ══════════════════════════════
+         INTRO GATE
+    ══════════════════════════════ -->
     <div id="intro-gate">
-        <div class="intro-title-wrapper">
-            <div class="title-row-top">마맘마마마</div>
-            <div class="title-row-bottom">
-                <span class="color-red">마</span>
-                <span class="color-yellow">왕</span>
-                <span class="color-white">님!</span>
+        <div class="intro-ring-2"></div>
+        <div class="intro-seal">
+            <div class="intro-eyebrow">Official Dashboard · Tempesta Castle Intranet</div>
+            <div class="intro-title-wrapper">
+                <span class="title-row-top">마맘마마마</span>
+                <div class="title-row-bottom">
+                    <span class="color-red">마</span>
+                    <span class="color-yellow">왕</span>
+                    <span class="color-white">님!</span>
+                </div>
             </div>
+            <div class="intro-subtitle">마왕이 쇼츠 중독인 건에 대하여</div>
+            <button class="enter-castle-btn" onclick="executeGateOpen()">입장하기</button>
         </div>
-        <div class="intro-subtitle">마왕이 쇼츠 중독인 건에 대하여</div>
-        <button class="enter-castle-btn" onclick="executeGateOpen()">입장하기</button>
     </div>
 
+    <!-- ══════════════════════════════
+         MAIN DASHBOARD
+    ══════════════════════════════ -->
     <div id="main-dashboard">
-        
-        <header class="global-header">
-            <div class="header-brand">
-                <span class="color-white">마맘마마마 </span>
-                <span class="color-red">마</span>
-                <span class="color-yellow">왕</span>
-                <span class="color-white">님!</span>
-            </div>
-            
-            <div class="header-right-side">
-                <div class="audio-controller-widget">
-                    <span class="bgm-label">BGM</span>
-                    <input type="range" id="volume-range-bar" class="volume-slider" min="0" max="1" step="0.05" value="0.3" oninput="adjustBgmVolume(this.value)">
-                    <button id="bgm-state-btn" class="audio-toggle-btn" onclick="toggleBgmPlayState()">⏸</button>
+        <div class="layout-shell">
+
+            <!-- ── SIDEBAR ── -->
+            <aside class="sidebar">
+                <div class="sidebar-brand">
+                    <div class="brand-eyebrow">Tempesta Castle</div>
+                    <div class="brand-title">
+                        <span class="color-white">마맘마마마&nbsp;</span>
+                        <span class="color-red">마</span>
+                        <span class="color-yellow">왕</span>
+                        <span class="color-white">님!</span>
+                    </div>
                 </div>
 
-                <nav class="tab-menu-group">
-                    <button class="menu-tab-btn active" onclick="switchDashboardPanel(event, 'panel-lore')">세계관 설정</button>
-                    <button class="menu-tab-btn" onclick="switchDashboardPanel(event, 'panel-characters')">등장인물</button>
+                <nav class="sidebar-nav">
+                    <div class="nav-section-label">Navigation</div>
+                    <button class="menu-tab-btn active" onclick="switchDashboardPanel(event, 'panel-lore')">
+                        <span class="nav-icon">🌑</span>세계관 설정
+                    </button>
+                    <button class="menu-tab-btn" onclick="switchDashboardPanel(event, 'panel-characters')">
+                        <span class="nav-icon">👥</span>등장인물
+                    </button>
                 </nav>
-            </div>
-        </header>
 
-        <main class="main-container">
-            
-            <section id="panel-lore" class="view-panel active">
-                <div class="lore-grid">
-                    <div class="lore-card">
-                        <div class="lore-status-badge stable">● 차원 안정도 99.8% (평화조약 가동 중)</div>
-                        <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EB%84%A4%EB%B7%B8%ED%97%A4%EC%9E%84.png" class="lore-card-img" alt="네뷸헤임">
-                        <h2>네뷸헤임 (Nebulheim)</h2>
-                        <p>수많은 마족들이 거주하는 광활한 차원의 세계. 과거에는 생존과 영토 확장을 목적으로 끊임없는 유혈 사태가 벌어지던 가혹한 대전쟁 시대였으나, 긴 전쟁 끝에 모든 종족이 상생을 도모하며 역사적인 '종언전쟁 평화조약'을 체결하였습니다.</p>
-                        <p>이 조약 과정에서 시엘의 선조가 초대 마왕으로 추대되었으며, 그 유산과 절대적인 권력은 현재 마왕 시엘에게 모두 상속되었습니다.</p>
-                        
-                        <div class="lore-meta-panel">
-                            <div class="lore-meta-item">
-                                <div class="item-label">차원 인프라 상태</div>
-                                <div class="item-value">다소 안정적</div>
-                            </div>
-                            <div class="lore-meta-item">
-                                <div class="item-label">현 마왕</div>
-                                <div class="item-value">시엘라 템페스타 루나리스 폰 템페리온</div>
-                            </div>
-                        </div>
+                <div class="sidebar-audio">
+                    <div class="audio-label-row">
+                        <span class="audio-label-text">BGM</span>
+                        <button id="bgm-state-btn" class="audio-toggle-btn" onclick="toggleBgmPlayState()">⏸</button>
                     </div>
-
-                    <div class="lore-card">
-                        <div class="lore-status-badge warning">⚠️ 마왕성 기후 시스템 경보 발령</div>
-                        <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%85%9C%ED%8E%98%EC%8A%A4%ED%83%80%20%EC%BA%90%EC%8A%AC.png" class="lore-card-img" alt="템페스타 캐슬">
-                        <h2>템페스타 캐슬 (Tempesta Castle)</h2>
-                        <p>평화가 정착된 현대 마계의 흐름에 발맞추어, 과거 군사 중심 요새였던 마왕성을 현대적인 '컴퍼니 기업형 오피스 구조'로 전면 개편한 상징적인 장소입니다. 엘리트 마족 사원들이 저마다의 부서 직책을 배정받아 성을 경영하고 있습니다.</p>
-                        <p>기상 이변 제어 마법력을 지닌 마왕 시엘의 감정 기복 상태에 따라, 성에는 폭풍우가 치거나 한여름에 눈이 내리는 역동적인 지능형 기후 인프라를 자랑합니다.</p>
-                        
-                        <div class="lore-meta-panel">
-                            <div class="lore-meta-item">
-                                <div class="item-label">실시간 성내 기후</div>
-                                <div class="item-value" style="color: var(--accent-yellow);">국지성 호우주의</div>
-                            </div>
-                            <div class="lore-meta-item">
-                                <div class="item-label">성 보안망</div>
-                                <div class="item-value">시엘 전용 기가 마력 와이파이</div>
-                            </div>
-                        </div>
-                    </div>
+                    <input type="range" id="volume-range-bar" class="volume-slider" min="0" max="1" step="0.05" value="0.3" oninput="adjustBgmVolume(this.value)">
                 </div>
+            </aside>
 
-                <div class="lore-chat-section">
-                    <h3>실시간 네트워킹 채널</h3>
-                    <p style="color: var(--text-muted); font-size: 0.95rem;">대화를 나눌 인물의 아이콘을 선택하면 템페스타 캐슬 인트라넷 전용 채팅방이 단독 개설됩니다.</p>
-                    
-                    <div class="lore-icons-row">
-                        <button class="lore-mini-icon-btn" onclick="openLiveMessenger('ciel')">
-                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%8B%9C%EC%97%98.png" alt="시엘"> 시엘
-                        </button>
-                        <button class="lore-mini-icon-btn" onclick="openLiveMessenger('kobel')">
-                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%BD%94%EB%B2%A8.png" alt="코벨"> 코벨
-                        </button>
-                        <button class="lore-mini-icon-btn" onclick="openLiveMessenger('volga')">
-                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EB%B3%BC%EA%B0%80.png" alt="볼가"> 볼가
-                        </button>
-                        <button class="lore-mini-icon-btn" onclick="openLiveMessenger('ivelin')">
-                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%9D%B4%EB%B2%A8%EB%A6%B0.png" alt="이벨린"> 이벨린
-                        </button>
-                        <button class="lore-mini-icon-btn" onclick="openLiveMessenger('tuba')">
-                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%88%AC%EB%B0%94.png" alt="투바"> 투바
-                        </button>
-                    </div>
+            <!-- ── TOP BAR ── -->
+            <header class="top-bar">
+                <div class="top-bar-breadcrumb">
+                    Nebulheim / <span>템페스타 캐슬 인트라넷</span>
                 </div>
-            </section>
-
-            <section id="panel-characters" class="view-panel">
-                <div class="characters-grid">
-                    
-                    <div class="summary-char-card" onclick="launchDetailModal('ciel')">
-                        <div class="card-img-holder">
-                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%8B%9C%EC%97%98.png" alt="시엘">
-                        </div>
-                        <div class="card-brief-info">
-                            <div class="brief-dept">마왕</div>
-                            <div class="brief-name">시엘</div>
-                            <div class="brief-meta">템페리온</div>
-                            <div class="view-more-action">Click to view details</div>
-                        </div>
-                    </div>
-
-                    <div class="summary-char-card" onclick="launchDetailModal('finale')">
-                        <div class="card-img-holder">
-                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%94%BC%EB%82%A0%EB%A0%88.png" alt="피날레">
-                        </div>
-                        <div class="card-brief-info">
-                            <div class="brief-dept">전략기획실장 겸 수석 아티스트</div>
-                            <div class="brief-name">피날레</div>
-                            <div class="brief-meta">고르곤</div>
-                            <div class="view-more-action">Click to view details</div>
-                        </div>
-                    </div>
-
-                    <div class="summary-char-card" onclick="launchDetailModal('kobel')">
-                        <div class="card-img-holder">
-                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%BD%94%EB%B2%A8.png" alt="코벨">
-                        </div>
-                        <div class="card-brief-info">
-                            <div class="brief-dept">문화 · 예술팀장</div>
-                            <div class="brief-name">코벨</div>
-                            <div class="brief-meta">서큐버스</div>
-                            <div class="view-more-action">Click to view details</div>
-                        </div>
-                    </div>
-
-                    <div class="summary-char-card" onclick="launchDetailModal('ivelin')">
-                        <div class="card-img-holder">
-                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%9D%B4%EB%B2%A8%EB%A6%B0.png" alt="이벨린">
-                        </div>
-                        <div class="card-brief-info">
-                            <div class="brief-dept">재무 · 회계팀장</div>
-                            <div class="brief-name">이벨린</div>
-                            <div class="brief-meta">흡혈귀</div>
-                            <div class="view-more-action">Click to view details</div>
-                        </div>
-                    </div>
-
-                    <div class="summary-char-card" onclick="launchDetailModal('pen')">
-                        <div class="card-img-holder">
-                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%8E%9C.png" alt="펜">
-                        </div>
-                        <div class="card-brief-info">
-                            <div class="brief-dept">인사팀장</div>
-                            <div class="brief-name">펜</div>
-                            <div class="brief-meta">오르도니아</div>
-                            <div class="view-more-action">Click to view details</div>
-                        </div>
-                    </div>
-
-                    <div class="summary-char-card" onclick="launchDetailModal('volga')">
-                        <div class="card-img-holder">
-                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EB%B3%BC%EA%B0%80.png" alt="볼가">
-                        </div>
-                        <div class="card-brief-info">
-                            <div class="brief-dept">비서실장 겸 감찰부장</div>
-                            <div class="brief-name">볼가</div>
-                            <div class="brief-meta">슬리피안</div>
-                            <div class="view-more-action">Click to view details</div>
-                        </div>
-                    </div>
-
-                    <div class="summary-char-card" onclick="launchDetailModal('franc')">
-                        <div class="card-img-holder">
-                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%94%84%EB%9E%91.png" alt="프랑">
-                        </div>
-                        <div class="card-brief-info">
-                            <div class="brief-dept">시설관리 겸 안전보건팀장</div>
-                            <div class="brief-name">프랑</div>
-                            <div class="brief-meta">언데드</div>
-                            <div class="view-more-action">Click to view details</div>
-                        </div>
-                    </div>
-
-                    <div class="summary-char-card" onclick="launchDetailModal('tuba')">
-                        <div class="card-img-holder">
-                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%88%AC%EB%B0%94.png" alt="투바">
-                        </div>
-                        <div class="card-brief-info">
-                            <div class="brief-dept">홍보팀장 겸 스트리머</div>
-                            <div class="brief-name">투바</div>
-                            <div class="brief-meta">카르드라</div>
-                            <div class="view-more-action">Click to view details</div>
-                        </div>
-                    </div>
-
+                <div class="weather-badge">
+                    ⛈ 마왕성 기후 · 국지성 호우주의
                 </div>
-            </section>
-        </main>
+            </header>
+
+            <!-- ── MAIN CONTENT ── -->
+            <main class="main-content">
+
+                <!-- ─── 세계관 설정 패널 ─── -->
+                <section id="panel-lore" class="view-panel active">
+                    <div class="panel-headline">
+                        <h1>세계관 설정</h1>
+                        <p>Nebulheim · Dimensional Lore Archive</p>
+                    </div>
+
+                    <div class="bento-grid">
+
+                        <!-- 네뷸헤임 카드 (tall) -->
+                        <div class="bento-card card-nebulheim">
+                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EB%84%A4%EB%B7%B8%ED%97%A4%EC%9E%84.png" class="card-img-banner" alt="네뷸헤임">
+                            <div class="card-body">
+                                <div class="card-status stable">● 차원 안정도 99.8% · 평화조약 가동 중</div>
+                                <h2 class="card-title">네뷸헤임 (Nebulheim)</h2>
+                                <p>수많은 마족들이 거주하는 광활한 차원의 세계. 과거에는 생존과 영토 확장을 목적으로 끊임없는 유혈 사태가 벌어지던 가혹한 대전쟁 시대였으나, 긴 전쟁 끝에 모든 종족이 상생을 도모하며 역사적인 '종언전쟁 평화조약'을 체결하였습니다.</p>
+                                <p>이 조약 과정에서 시엘의 선조가 초대 마왕으로 추대되었으며, 그 유산과 절대적인 권력은 현재 마왕 시엘에게 모두 상속되었습니다.</p>
+                                <div class="meta-grid">
+                                    <div class="meta-item">
+                                        <div class="meta-label">차원 인프라 상태</div>
+                                        <div class="meta-value">다소 안정적</div>
+                                    </div>
+                                    <div class="meta-item">
+                                        <div class="meta-label">현 마왕</div>
+                                        <div class="meta-value">시엘라 템페스타 루나리스 폰 템페리온</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 템페스타 캐슬 카드 -->
+                        <div class="bento-card card-tempesta">
+                            <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%85%9C%ED%8E%98%EC%8A%A4%ED%83%80%20%EC%BA%90%EC%8A%AC.png" class="card-img-banner" alt="템페스타 캐슬">
+                            <div class="card-body">
+                                <div class="card-status warning">⚠ 마왕성 기후 시스템 경보 발령</div>
+                                <h2 class="card-title">템페스타 캐슬</h2>
+                                <p>평화가 정착된 현대 마계의 흐름에 발맞추어, 과거 군사 중심 요새였던 마왕성을 현대적인 '컴퍼니 기업형 오피스 구조'로 전면 개편한 상징적인 장소입니다. 엘리트 마족 사원들이 저마다의 부서 직책을 배정받아 성을 경영하고 있습니다.</p>
+                                <p>기상 이변 제어 마법력을 지닌 마왕 시엘의 감정 기복 상태에 따라, 성에는 폭풍우가 치거나 한여름에 눈이 내리는 역동적인 지능형 기후 인프라를 자랑합니다.</p>
+                                <div class="meta-grid">
+                                    <div class="meta-item">
+                                        <div class="meta-label">실시간 성내 기후</div>
+                                        <div class="meta-value" style="color: var(--amber);">국지성 호우주의</div>
+                                    </div>
+                                    <div class="meta-item">
+                                        <div class="meta-label">성 보안망</div>
+                                        <div class="meta-value">기가 마력 와이파이</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 인트라넷 채널 전체폭 -->
+                        <div class="bento-card card-intranet">
+                            <div class="intranet-inner">
+                                <div class="intranet-left">
+                                    <div class="intranet-title">실시간 네트워킹 채널</div>
+                                    <div class="intranet-desc">아이콘 선택 시 전용 채팅방 개설</div>
+                                </div>
+                                <div class="intranet-divider"></div>
+                                <div class="lore-icons-row">
+                                    <button class="lore-mini-icon-btn" onclick="openLiveMessenger('ciel')">
+                                        <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%8B%9C%EC%97%98.png" alt="시엘"> 시엘
+                                    </button>
+                                    <button class="lore-mini-icon-btn" onclick="openLiveMessenger('kobel')">
+                                        <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%BD%94%EB%B2%A8.png" alt="코벨"> 코벨
+                                    </button>
+                                    <button class="lore-mini-icon-btn" onclick="openLiveMessenger('volga')">
+                                        <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EB%B3%BC%EA%B0%80.png" alt="볼가"> 볼가
+                                    </button>
+                                    <button class="lore-mini-icon-btn" onclick="openLiveMessenger('ivelin')">
+                                        <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%9D%B4%EB%B2%A8%EB%A6%B0.png" alt="이벨린"> 이벨린
+                                    </button>
+                                    <button class="lore-mini-icon-btn" onclick="openLiveMessenger('tuba')">
+                                        <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%88%AC%EB%B0%94.png" alt="투바"> 투바
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- ─── 등장인물 패널 ─── -->
+                <section id="panel-characters" class="view-panel">
+                    <div class="panel-headline">
+                        <h1>등장인물</h1>
+                        <p>Tempesta Castle · Personnel Registry</p>
+                    </div>
+
+                    <div class="char-deck-wrapper">
+                        <div class="characters-grid">
+
+                            <div class="summary-char-card" onclick="launchDetailModal('ciel')">
+                                <div class="card-img-holder">
+                                    <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%8B%9C%EC%97%98.png" alt="시엘">
+                                </div>
+                                <div class="card-brief-info">
+                                    <div class="brief-dept">마왕</div>
+                                    <div class="brief-name">시엘</div>
+                                    <div class="brief-meta">템페리온</div>
+                                    <div class="view-more-action">VIEW DETAILS →</div>
+                                </div>
+                            </div>
+
+                            <div class="summary-char-card" onclick="launchDetailModal('finale')">
+                                <div class="card-img-holder">
+                                    <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%94%BC%EB%82%A0%EB%A0%88.png" alt="피날레">
+                                </div>
+                                <div class="card-brief-info">
+                                    <div class="brief-dept">전략기획실장 겸 수석 아티스트</div>
+                                    <div class="brief-name">피날레</div>
+                                    <div class="brief-meta">고르곤</div>
+                                    <div class="view-more-action">VIEW DETAILS →</div>
+                                </div>
+                            </div>
+
+                            <div class="summary-char-card" onclick="launchDetailModal('kobel')">
+                                <div class="card-img-holder">
+                                    <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%BD%94%EB%B2%A8.png" alt="코벨">
+                                </div>
+                                <div class="card-brief-info">
+                                    <div class="brief-dept">문화 · 예술팀장</div>
+                                    <div class="brief-name">코벨</div>
+                                    <div class="brief-meta">서큐버스</div>
+                                    <div class="view-more-action">VIEW DETAILS →</div>
+                                </div>
+                            </div>
+
+                            <div class="summary-char-card" onclick="launchDetailModal('ivelin')">
+                                <div class="card-img-holder">
+                                    <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%9D%B4%EB%B2%A8%EB%A6%B0.png" alt="이벨린">
+                                </div>
+                                <div class="card-brief-info">
+                                    <div class="brief-dept">재무 · 회계팀장</div>
+                                    <div class="brief-name">이벨린</div>
+                                    <div class="brief-meta">흡혈귀</div>
+                                    <div class="view-more-action">VIEW DETAILS →</div>
+                                </div>
+                            </div>
+
+                            <div class="summary-char-card" onclick="launchDetailModal('pen')">
+                                <div class="card-img-holder">
+                                    <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%8E%9C.png" alt="펜">
+                                </div>
+                                <div class="card-brief-info">
+                                    <div class="brief-dept">인사팀장</div>
+                                    <div class="brief-name">펜</div>
+                                    <div class="brief-meta">오르도니아</div>
+                                    <div class="view-more-action">VIEW DETAILS →</div>
+                                </div>
+                            </div>
+
+                            <div class="summary-char-card" onclick="launchDetailModal('volga')">
+                                <div class="card-img-holder">
+                                    <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EB%B3%BC%EA%B0%80.png" alt="볼가">
+                                </div>
+                                <div class="card-brief-info">
+                                    <div class="brief-dept">비서실장 겸 감찰부장</div>
+                                    <div class="brief-name">볼가</div>
+                                    <div class="brief-meta">슬리피안</div>
+                                    <div class="view-more-action">VIEW DETAILS →</div>
+                                </div>
+                            </div>
+
+                            <div class="summary-char-card" onclick="launchDetailModal('franc')">
+                                <div class="card-img-holder">
+                                    <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%94%84%EB%9E%91.png" alt="프랑">
+                                </div>
+                                <div class="card-brief-info">
+                                    <div class="brief-dept">시설관리 겸 안전보건팀장</div>
+                                    <div class="brief-name">프랑</div>
+                                    <div class="brief-meta">언데드</div>
+                                    <div class="view-more-action">VIEW DETAILS →</div>
+                                </div>
+                            </div>
+
+                            <div class="summary-char-card" onclick="launchDetailModal('tuba')">
+                                <div class="card-img-holder">
+                                    <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%88%AC%EB%B0%94.png" alt="투바">
+                                </div>
+                                <div class="card-brief-info">
+                                    <div class="brief-dept">홍보팀장 겸 스트리머</div>
+                                    <div class="brief-name">투바</div>
+                                    <div class="brief-meta">카르드라</div>
+                                    <div class="view-more-action">VIEW DETAILS →</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
     </div>
 
-    <!-- 캐릭터 상세 인포 모달 레이어 -->
+    <!-- 캐릭터 상세 모달 -->
     <div id="detail-modal-overlay" onclick="closeDetailModal()">
         <div class="modal-container" onclick="event.stopPropagation()">
             <button class="modal-close-trigger" onclick="closeDetailModal()">CLOSE ×</button>
@@ -1147,17 +1738,14 @@
         </div>
     </div>
 
-    <!-- 메신저 채팅방 전용 독립 모달 레이어 -->
+    <!-- 메신저 모달 -->
     <div id="messenger-modal-overlay" onclick="closeMessengerModal()">
         <div class="messenger-window" onclick="event.stopPropagation()">
             <div class="messenger-header">
                 <span id="msg-header-title">인트라넷 톡방</span>
                 <button class="messenger-close-btn" onclick="closeMessengerModal()">×</button>
             </div>
-            <div class="messenger-chat-area" id="msg-chat-area-node">
-                <!-- 가상 렌더링 영역 -->
-            </div>
-            <!-- 쌍방향 입력을 전담하는 새로운 하단 바 구성 -->
+            <div class="messenger-chat-area" id="msg-chat-area-node"></div>
             <div class="messenger-footer-input-area">
                 <input type="text" id="msg-user-input" class="messenger-input-field" placeholder="메시지를 입력해 보세요..." onkeydown="handleChatKeyDown(event)">
                 <button class="messenger-send-btn" onclick="submitUserMessage()">전송</button>
@@ -1168,9 +1756,9 @@
     <script>
         const audioObject = document.getElementById('dashboard-bgm');
         const audioStateBtn = document.getElementById('bgm-state-btn');
-        let currentTypingTimer = null; 
-        let activeCharacterId = null; // 현재 활성화된 캐릭터 ID 관리
-        let responseTrackers = { ciel: 0, kobel: 0, volga: 0, ivelin: 0, tuba: 0 }; // 캐릭터별 답변 흐름 제어 카운터
+        let currentTypingTimer = null;
+        let activeCharacterId = null;
+        let responseTrackers = { ciel: 0, kobel: 0, volga: 0, ivelin: 0, tuba: 0 };
 
         const GlobalCastleRegistry = {
             ciel: {
@@ -1271,7 +1859,6 @@
             }
         };
 
-        // 초기 인트로 멘트 데이터베이스
         const LoreChatScenarioRegistry = {
             ciel: {
                 title: "시엘과 1:1 대화방",
@@ -1295,7 +1882,6 @@
             }
         };
 
-        // 유저 입력에 반응하는 캐릭터별 실시간 연속 답변 스크립트 풀
         const InteractiveResponsePool = {
             ciel: [
                 "오? 방금 내가 올린 피드에 댓글 단 사람 너냐? ㅋㅋㅋ 센스 개지리네 인정함! 하트 눌러드림 쾅쾅",
@@ -1327,16 +1913,12 @@
         function executeGateOpen() {
             const gate = document.getElementById('intro-gate');
             const dashboard = document.getElementById('main-dashboard');
-            
             gate.classList.add('fade-out');
             dashboard.classList.add('active');
-
-            audioObject.volume = 0.5;
-            
+            audioObject.volume = 0.3;
             audioObject.play().then(() => {
                 audioStateBtn.textContent = "⏸";
-            }).catch(error => {
-                console.log("오디오 재생 보류:", error);
+            }).catch(() => {
                 audioStateBtn.textContent = "▶";
             });
         }
@@ -1356,34 +1938,24 @@
         }
 
         function switchDashboardPanel(event, targetPanelId) {
-            const panels = document.querySelectorAll('.view-panel');
-            panels.forEach(p => p.classList.remove('active'));
-
-            const tabButtons = document.querySelectorAll('.menu-tab-btn');
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-
+            document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.menu-tab-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(targetPanelId).classList.add('active');
             event.currentTarget.classList.add('active');
         }
 
-        // 메신저 방 열기
         function openLiveMessenger(id) {
             const scenario = LoreChatScenarioRegistry[id];
             const charInfo = GlobalCastleRegistry[id];
             if (!scenario || !charInfo) return;
-
             if (currentTypingTimer) clearInterval(currentTypingTimer);
-            activeCharacterId = id; // 현재 대화 상대 고정
-
+            activeCharacterId = id;
             const overlay = document.getElementById('messenger-modal-overlay');
             const headerTitle = document.getElementById('msg-header-title');
             const chatArea = document.getElementById('msg-chat-area-node');
-
             headerTitle.textContent = `💬 ${scenario.title}`;
-            
             const now = new Date();
             const timeStr = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
-
             chatArea.innerHTML = `
                 <div class="chat-msg-item">
                     <img src="${charInfo.imgSrc}" class="chat-room-avatar" alt="${charInfo.name}">
@@ -1396,15 +1968,12 @@
                     </div>
                 </div>
             `;
-
             overlay.style.display = 'flex';
             document.body.style.overflow = 'hidden';
             document.getElementById('msg-user-input').focus();
-
             const targetBubble = document.getElementById('target-typing-bubble');
             const fullText = scenario.text;
             let charIndex = 0;
-
             currentTypingTimer = setInterval(() => {
                 if (charIndex < fullText.length) {
                     targetBubble.textContent += fullText.charAt(charIndex);
@@ -1417,18 +1986,14 @@
             }, 30);
         }
 
-        // 유저 메시지 전송 로직
         function submitUserMessage() {
             const inputNode = document.getElementById('msg-user-input');
             const text = inputNode.value.trim();
             if (!text || !activeCharacterId) return;
-
             const chatArea = document.getElementById('msg-chat-area-node');
             const now = new Date();
             const timeStr = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
-
-            // 1. 유저 말풍선 인터페이스 추가 (오른쪽 정렬)
-            const userMsgHtml = `
+            chatArea.insertAdjacentHTML('beforeend', `
                 <div class="chat-msg-item user-side">
                     <div class="chat-room-content">
                         <div class="chat-bubble-row">
@@ -1437,46 +2002,30 @@
                         </div>
                     </div>
                 </div>
-            `;
-            chatArea.insertAdjacentHTML('beforeend', userMsgHtml);
+            `);
             inputNode.value = "";
             chatArea.scrollTop = chatArea.scrollHeight;
-
-            // 2. 캐릭터의 타이핑 응답 이벤트 대기 유도
-            setTimeout(() => {
-                renderCharacterReply();
-            }, 800);
+            setTimeout(renderCharacterReply, 800);
         }
 
-        // 엔터키 전송 처리
         function handleChatKeyDown(event) {
-            if (event.key === 'Enter') {
-                submitUserMessage();
-            }
+            if (event.key === 'Enter') submitUserMessage();
         }
 
-        // 캐릭터 가상 답변 출력 엔진
         function renderCharacterReply() {
             if (!activeCharacterId) return;
             if (currentTypingTimer) clearInterval(currentTypingTimer);
-
             const chatArea = document.getElementById('msg-chat-area-node');
             const charInfo = GlobalCastleRegistry[activeCharacterId];
             const pool = InteractiveResponsePool[activeCharacterId];
-            
-            // 풀 한도를 초과하면 계속 마지막 답변 순환 리플레이
             let index = responseTrackers[activeCharacterId];
-            if (index >= pool.length) {
-                index = pool.length - 1;
-            }
+            if (index >= pool.length) index = pool.length - 1;
             const replyText = pool[index];
-            responseTrackers[activeCharacterId]++; // 다음 인덱스로 시프트
-
+            responseTrackers[activeCharacterId]++;
             const now = new Date();
             const timeStr = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
             const bubbleId = `reply-bubble-${Date.now()}`;
-
-            const botMsgHtml = `
+            chatArea.insertAdjacentHTML('beforeend', `
                 <div class="chat-msg-item">
                     <img src="${charInfo.imgSrc}" class="chat-room-avatar" alt="${charInfo.name}">
                     <div class="chat-room-content">
@@ -1487,13 +2036,10 @@
                         </div>
                     </div>
                 </div>
-            `;
-            chatArea.insertAdjacentHTML('beforeend', botMsgHtml);
+            `);
             chatArea.scrollTop = chatArea.scrollHeight;
-
             const targetBubble = document.getElementById(bubbleId);
             let charIndex = 0;
-
             currentTypingTimer = setInterval(() => {
                 if (charIndex < replyText.length) {
                     targetBubble.textContent += replyText.charAt(charIndex);
@@ -1516,30 +2062,23 @@
         function launchDetailModal(key) {
             const character = GlobalCastleRegistry[key];
             if (!character) return;
-
             const imgContainer = document.getElementById('modal-target-img-wrap');
             const dataContainer = document.getElementById('modal-target-data-wrap');
-
             imgContainer.innerHTML = `<img src="${character.imgSrc}" alt="${character.name}">`;
-
             let specHtml = character.specs.map(item => `
                 <li>
                     <span class="label">${item.label}</span>
                     <span class="desc">${item.desc}</span>
                 </li>
             `).join('');
-
             dataContainer.innerHTML = `
                 <div class="modal-header-section">
                     <p class="modal-dept-label">${character.dept}</p>
                     <h2 class="modal-char-name">${character.name}</h2>
                 </div>
-                <ul class="modal-specs-list">
-                    ${specHtml}
-                </ul>
+                <ul class="modal-specs-list">${specHtml}</ul>
                 <div class="modal-quote-box">"${character.quote}"</div>
             `;
-
             document.getElementById('detail-modal-overlay').style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
