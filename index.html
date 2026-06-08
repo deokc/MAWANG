@@ -1465,6 +1465,383 @@
                 order: 99;
             }
         }
+
+        /* ═══════════════════════════════════════
+           RACE LOTTERY PANEL
+        ═══════════════════════════════════════ */
+        #fireworks-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9000;
+            display: none;
+        }
+
+        .race-lottery-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding-bottom: 60px;
+        }
+
+        .lottery-stage {
+            width: 100%;
+            max-width: 640px;
+            background: var(--card);
+            border: 1px solid var(--ghost-border);
+            position: relative;
+            overflow: hidden;
+            padding: 48px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .lottery-stage::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--crimson), var(--violet), transparent);
+        }
+
+        .lottery-stage::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent, transparent 20px,
+                rgba(123,75,176,0.012) 20px, rgba(123,75,176,0.012) 21px
+            );
+            pointer-events: none;
+        }
+
+        .lottery-eyebrow {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 0.65rem;
+            letter-spacing: 5px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            position: relative;
+            z-index: 1;
+        }
+
+        .lottery-drum-wrap {
+            width: 100%;
+            max-width: 420px;
+            height: 100px;
+            overflow: hidden;
+            position: relative;
+            background: var(--surface);
+            border: 1px solid rgba(200,34,58,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .lottery-drum-wrap::before,
+        .lottery-drum-wrap::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0;
+            height: 28px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .lottery-drum-wrap::before {
+            top: 0;
+            background: linear-gradient(to bottom, var(--surface), transparent);
+        }
+
+        .lottery-drum-wrap::after {
+            bottom: 0;
+            background: linear-gradient(to top, var(--surface), transparent);
+        }
+
+        .lottery-side-lines {
+            position: absolute;
+            top: 50%;
+            left: 0; right: 0;
+            transform: translateY(-50%);
+            height: 44px;
+            border-top: 1px solid rgba(200,34,58,0.3);
+            border-bottom: 1px solid rgba(200,34,58,0.3);
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        #lottery-race-display {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 2.2rem;
+            color: var(--text-bright);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 3px;
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        #lottery-race-display.spinning {
+            animation: drumFlicker 0.08s linear infinite;
+        }
+
+        @keyframes drumFlicker {
+            0%   { opacity: 1;   transform: scaleY(1); }
+            40%  { opacity: 0.2; transform: scaleY(0.85); }
+            100% { opacity: 1;   transform: scaleY(1); }
+        }
+
+        #lottery-race-display.result-show {
+            animation: resultFlash 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards;
+        }
+
+        @keyframes resultFlash {
+            0%   { transform: scale(0.6); opacity: 0; }
+            60%  { transform: scale(1.18); opacity: 1;
+                   text-shadow: 0 0 24px var(--amber), 0 0 50px var(--crimson); }
+            100% { transform: scale(1); opacity: 1; text-shadow: none; }
+        }
+
+        .lottery-action-btn {
+            position: relative;
+            z-index: 1;
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.05rem;
+            letter-spacing: 5px;
+            padding: 18px 56px;
+            background: transparent;
+            border: 1px solid var(--crimson);
+            color: var(--text-bright);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .lottery-action-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--crimson);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+            z-index: -1;
+        }
+
+        .lottery-action-btn:hover::before { transform: scaleX(1); }
+        .lottery-action-btn:hover { color: #fff; box-shadow: 0 0 24px var(--crimson-glow); }
+
+        .lottery-action-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            border-color: var(--ghost-border);
+        }
+        .lottery-action-btn:disabled::before { display: none; }
+        .lottery-action-btn:disabled:hover { color: var(--text-bright); box-shadow: none; }
+
+        /* ── Result Card ── */
+        .race-result-card {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card);
+            border: 1px solid var(--ghost-border);
+            overflow: hidden;
+            position: relative;
+            display: none;
+        }
+
+        .race-result-card.visible {
+            display: block;
+            animation: cardReveal 0.65s cubic-bezier(0.34,1.56,0.64,1) forwards;
+        }
+
+        @keyframes cardReveal {
+            from { opacity: 0; transform: translateY(28px) scale(0.94); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .race-result-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--crimson), var(--violet), var(--amber));
+        }
+
+        .race-card-inner {
+            padding: 36px 40px;
+        }
+
+        .race-rarity-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            font-size: 0.68rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            border: 1px solid;
+            border-radius: 2px;
+        }
+
+        .race-header-row {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--ghost-border);
+        }
+
+        .race-emoji-icon {
+            font-size: 2.8rem;
+            width: 72px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--surface);
+            border: 1px solid var(--ghost-border);
+            flex-shrink: 0;
+        }
+
+        .race-name-big {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 2.8rem;
+            color: var(--text-bright);
+            line-height: 1;
+        }
+
+        .race-description {
+            color: var(--text-mid);
+            line-height: 1.85;
+            font-size: 0.92rem;
+            margin-bottom: 24px;
+        }
+
+        .race-traits-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .race-trait-box {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 16px 18px;
+        }
+
+        .race-trait-label {
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+        }
+
+        .race-tag-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .race-tag {
+            padding: 4px 10px;
+            background: rgba(200,34,58,0.08);
+            border: 1px solid rgba(200,34,58,0.2);
+            color: var(--crimson);
+            font-size: 0.78rem;
+            font-weight: 700;
+            border-radius: 2px;
+        }
+
+        .race-tag.ability {
+            background: rgba(123,75,176,0.08);
+            border-color: rgba(123,75,176,0.2);
+            color: var(--violet-light);
+        }
+
+        .race-weakness-box {
+            background: rgba(232,168,32,0.04);
+            border: 1px solid rgba(232,168,32,0.15);
+            padding: 14px 18px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+
+        .race-weakness-icon {
+            color: var(--amber);
+            flex-shrink: 0;
+            padding-top: 1px;
+        }
+
+        .race-weakness-text {
+            color: var(--text-mid);
+            font-size: 0.88rem;
+            line-height: 1.65;
+        }
+
+        .race-reroll-area {
+            display: flex;
+            justify-content: center;
+            padding: 28px 0 36px;
+            border-top: 1px solid var(--ghost-border);
+            margin-top: 28px;
+        }
+
+        .reroll-btn {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            padding: 14px 38px;
+            background: transparent;
+            border: 1px solid rgba(123,75,176,0.4);
+            color: var(--violet-light);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .reroll-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(123,75,176,0.15);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+            z-index: -1;
+        }
+
+        .reroll-btn:hover::before { transform: scaleX(1); }
+        .reroll-btn:hover {
+            color: #fff;
+            border-color: var(--violet);
+            box-shadow: 0 0 20px rgba(123,75,176,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .race-traits-grid { grid-template-columns: 1fr; }
+            .race-card-inner { padding: 24px 20px; }
+            .race-name-big { font-size: 2rem; }
+            .lottery-stage { padding: 32px 20px; }
+        }
     </style>
 </head>
 <body>
@@ -1517,6 +1894,9 @@
                     </button>
                     <button class="menu-tab-btn" onclick="switchDashboardPanel(event, 'panel-characters')">
                         <span class="nav-icon">👥</span>등장인물
+                    </button>
+                    <button class="menu-tab-btn" onclick="switchDashboardPanel(event, 'panel-race')">
+                        <span class="nav-icon">🎲</span>종족 설정
                     </button>
                 </nav>
 
@@ -1606,7 +1986,7 @@
                                         <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%8B%9C%EC%97%98.png" alt="시엘"> 시엘
                                     </button>
                                     <button class="lore-mini-icon-btn" onclick="openLiveMessenger('kobel')">
-                                        <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%BD%94%EB%B2%A8.png" alt="코벨"> 코벨
+                                        <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%BD%94%EB%B2%A801.png" alt="코벨"> 코벨
                                     </button>
                                     <button class="lore-mini-icon-btn" onclick="openLiveMessenger('volga')">
                                         <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EB%B3%BC%EA%B0%80.png" alt="볼가"> 볼가
@@ -1615,7 +1995,7 @@
                                         <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%9D%B4%EB%B2%A8%EB%A6%B0.png" alt="이벨린"> 이벨린
                                     </button>
                                     <button class="lore-mini-icon-btn" onclick="openLiveMessenger('tuba')">
-                                        <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%88%AC%EB%B0%94.png" alt="투바"> 투바
+                                        <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%88%AC%EB%B0%9401.png" alt="투바"> 투바
                                     </button>
                                 </div>
                             </div>
@@ -1660,7 +2040,7 @@
 
                             <div class="summary-char-card" onclick="launchDetailModal('kobel')">
                                 <div class="card-img-holder">
-                                    <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%BD%94%EB%B2%A8.png" alt="코벨">
+                                    <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%BD%94%EB%B2%A801.png" alt="코벨">
                                 </div>
                                 <div class="card-brief-info">
                                     <div class="brief-dept">문화 · 예술팀장</div>
@@ -1684,7 +2064,7 @@
 
                             <div class="summary-char-card" onclick="launchDetailModal('pen')">
                                 <div class="card-img-holder">
-                                    <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%8E%9C.png" alt="펜">
+                                    <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%8E%9C01.png" alt="펜">
                                 </div>
                                 <div class="card-brief-info">
                                     <div class="brief-dept">인사팀장</div>
@@ -1720,7 +2100,7 @@
 
                             <div class="summary-char-card" onclick="launchDetailModal('tuba')">
                                 <div class="card-img-holder">
-                                    <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%88%AC%EB%B0%94.png" alt="투바">
+                                    <img src="https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%88%AC%EB%B0%9401.png" alt="투바">
                                 </div>
                                 <div class="card-brief-info">
                                     <div class="brief-dept">홍보팀장 겸 스트리머</div>
@@ -1731,6 +2111,65 @@
                             </div>
 
                         </div>
+                    </div>
+                </section>
+
+                <!-- ─── 종족 설정 패널 ─── -->
+                <section id="panel-race" class="view-panel">
+                    <div class="panel-headline">
+                        <h1>종족 설정</h1>
+                        <p>Nebulheim · Race Designation Lottery System</p>
+                    </div>
+
+                    <div class="race-lottery-wrapper">
+
+                        <!-- 추첨 기계 -->
+                        <div class="lottery-stage">
+                            <div class="lottery-eyebrow">Race Lottery · Randomized Assignment Protocol</div>
+
+                            <div class="lottery-drum-wrap">
+                                <div class="lottery-side-lines"></div>
+                                <div id="lottery-race-display">??? &nbsp; 추첨 대기 중</div>
+                            </div>
+
+                            <button class="lottery-action-btn" id="lottery-start-btn" onclick="startRaceLottery()">
+                                ⚔ &nbsp; 종족 추첨 시작
+                            </button>
+                        </div>
+
+                        <!-- 결과 카드 -->
+                        <div class="race-result-card" id="race-result-card">
+                            <div class="race-card-inner">
+                                <div class="race-rarity-badge" id="race-rarity-badge"></div>
+                                <div class="race-header-row">
+                                    <div class="race-emoji-icon" id="race-emoji-icon"></div>
+                                    <div>
+                                        <div class="race-name-big" id="race-name-big"></div>
+                                    </div>
+                                </div>
+                                <p class="race-description" id="race-description"></p>
+                                <div class="race-traits-grid">
+                                    <div class="race-trait-box">
+                                        <div class="race-trait-label">⊛ 종족 특성</div>
+                                        <div class="race-tag-wrap" id="race-traits-wrap"></div>
+                                    </div>
+                                    <div class="race-trait-box">
+                                        <div class="race-trait-label">⊛ 보유 능력</div>
+                                        <div class="race-tag-wrap" id="race-abilities-wrap"></div>
+                                    </div>
+                                </div>
+                                <div class="race-weakness-box">
+                                    <span class="race-weakness-icon">⚠</span>
+                                    <span class="race-weakness-text" id="race-weakness-text"></span>
+                                </div>
+                            </div>
+                            <div class="race-reroll-area">
+                                <button class="reroll-btn" onclick="resetRaceLottery()">
+                                    🎲 &nbsp; 다시 추첨하기
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
                 </section>
 
@@ -1761,6 +2200,9 @@
             </div>
         </div>
     </div>
+
+    <!-- 폭죽 캔버스 -->
+    <canvas id="fireworks-canvas"></canvas>
 
     <script>
         const audioObject = document.getElementById('dashboard-bgm');
@@ -1797,7 +2239,7 @@
             kobel: {
                 dept: "문화 · 예술팀장",
                 name: "코벨",
-                imgSrc: "https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%BD%94%EB%B2%A8.png",
+                imgSrc: "https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%EC%BD%94%EB%B2%A801.png",
                 specs: [
                     { label: "프로필", desc: "서큐버스 / 여성 / 외관나이 20대 / 158cm" },
                     { label: "외관", desc: "분홍색 트윈테일 헤어, 녹안, 소형 날개와 가느다란 꼬리." },
@@ -1821,7 +2263,7 @@
             pen: {
                 dept: "인사팀장",
                 name: "펜",
-                imgSrc: "https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%8E%9C.png",
+                imgSrc: "https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%8E%9C01.png",
                 specs: [
                     { label: "프로필", desc: "오르도니아 / 남성 / 외관나이 20대 / 175cm" },
                     { label: "외관", desc: "정갈한 흑발, 흑안, 입술 밑과 눈 밑에 점, 머리 위의 헤일로와 거대한 날개." },
@@ -1857,7 +2299,7 @@
             tuba: {
                 dept: "홍보팀장 겸 스트리머",
                 name: "투바",
-                imgSrc: "https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%88%AC%EB%B0%94.png",
+                imgSrc: "https://raw.githubusercontent.com/deokc/MAWANG/refs/heads/main/%ED%88%AC%EB%B0%9401.png",
                 specs: [
                     { label: "프로필", desc: "카르드라 / 남성 / 외관나이 10대 / 168cm" },
                     { label: "외관", desc: "어두운 자색 헤어, 자안, 콧등에 반창고, 용 꼬리." },
@@ -1879,7 +2321,7 @@
             },
             volga: {
                 title: "볼가와 1:1 대화방",
-                text: "비서실장 볼가입니다. 요청하신 성내 보안 감찰 결과 및 주간 업무 보고서를 작성 중입ㄴ...ㅣ....ㄷ....... ㅡ................. zzzZZZ....... zzz....... 아, 아닙니다.. 절대 업무 중 조는 행위는 하지 않습ㄴ....... (쿠울........) 규율에... 따...ㄹㅏ....... zzzZZ..."
+                text: "비서실장 볼가입니다. 요청하신 성내 보안 감찰 결과 및 주간 업무 보고서를 작성 중입ㄴ...ㅣ....ㄷ....... ㅡ................. zzzZZZ....... zzz....... 아, 아닙니다.. 절대 업무 중 조는 행위는 하지 않습ㄴ....... 규율에... 따...ㄹㅏ....... zzzZZ..."
             },
             ivelin: {
                 title: "이벨린과 1:1 대화방",
@@ -1903,8 +2345,8 @@
                 "이봐, 만약 다음 한정판 피규어 추첨 응모에 네 이름을 빌려준다면... 내 특별히 심연의 권속 자리를 내어주마. 계약할 텐가?"
             ],
             volga: [
-                "보고... 계속하겠습니다....... 현재 마왕성의 보안 등급은........ zzzZZZ..... (쿠울..) .....아.. 죄송합니다. 잠들지 않았습니다. 보안 장비의 잔류 마력을 분석 중이었습니다....",
-                "......방금 보낸 메시지는 확인했ㅅ.....ㅡ........ㅂ......ㄴ......ㅣ...........ㄷ.......... zzz...... (쿠우울......) ...규...율... 준수....... 감찰........ zzzZZZ...",
+                "보고... 계속하겠습니다....... 현재 마왕성의 보안 등급은........ zzzZZZ..... .....아.. 죄송합니다. 잠들지 않았습니다. 보안 장비의 잔류 마력을 분석 중이었습니다....",
+                "......방금 보낸 메시지는 확인했ㅅ.....ㅡ........ㅂ......ㄴ......ㅣ...........ㄷ.......... zzz...... ...규...율... 준수....... 감찰........ zzzZZZ...",
                 "......제가... 눈꺼풀의 무게를... 이기지 못하고....... 무작위... 전원... 오프....... 수면 프로토콜 가동....... (툭)"
             ],
             ivelin: [
@@ -2095,6 +2537,334 @@
         function closeDetailModal() {
             document.getElementById('detail-modal-overlay').style.display = 'none';
             document.body.style.overflow = 'auto';
+        }
+
+        // ═══════════════════════════════════════
+        //  RACE LOTTERY SYSTEM
+        // ═══════════════════════════════════════
+        const RaceDatabase = {
+            abyssal: {
+                name: "어비설",
+                emoji: "🌑",
+                rarity: "전설",
+                rarityColor: "#ffd700",
+                rarityBg: "rgba(255,215,0,0.08)",
+                description: "심연의 공허에서 탄생한 마계 최고위 종족. 존재 자체가 차원의 균열이며, 현실과 허무의 경계를 자유롭게 오가는 원초적 암흑 혈통.",
+                traits: ["차원 경계 통행", "공허 마력 자체 발생", "물질화·비물질화 전환", "존재 삭제 내성"],
+                abilities: ["공허 균열 개방", "현실 붕괴 파동", "차원 흡수", "어둠 구현체 소환"],
+                weakness: "빛의 원소와 접촉 시 물질화가 불안정해져 형태를 일시적으로 유지할 수 없게 됨"
+            },
+            infernus: {
+                name: "인페르누스",
+                emoji: "🔥",
+                rarity: "전설",
+                rarityColor: "#ff4500",
+                rarityBg: "rgba(255,69,0,0.08)",
+                description: "마계 최심부 화염 지옥에서 기원한 고대 종족. 육체 자체가 살아있는 용광로이며, 냉기를 완전히 증발시키는 절대 화염의 지배자.",
+                traits: ["체온 무한 상승", "화염 완전 흡수", "용암 혈액 순환", "열 감지 시각"],
+                abilities: ["지옥 화염 방사", "마그마 소환", "불기둥 결계", "열 폭발 충격파"],
+                weakness: "절대 영도에 가까운 냉기를 받으면 내부 화염이 일시 정지하며 완전 석화 상태 진입"
+            },
+            umbraveil: {
+                name: "엄브라베일",
+                emoji: "🌫️",
+                rarity: "레어",
+                rarityColor: "#a67fd4",
+                rarityBg: "rgba(166,127,212,0.08)",
+                description: "그림자와 안개를 육체로 삼는 마족. 실체 없는 존재로 물리 공격을 통과시키며 어둠 속에서 무한히 분열하는 변환 종족.",
+                traits: ["반물질 신체 구조", "어둠 속 무제한 분열", "그림자 흡수 동화", "투명화 의지 발동"],
+                abilities: ["안개 변환 이동", "그림자 분신술", "어둠 흡수 치유", "공포 오라 방출"],
+                weakness: "직사광선에 노출 시 신체가 강제로 응고되어 분열 및 이동 능력이 완전히 봉인됨"
+            },
+            bloodthorn: {
+                name: "블러드쏜",
+                emoji: "🥀",
+                rarity: "레어",
+                rarityColor: "#c0392b",
+                rarityBg: "rgba(192,57,43,0.08)",
+                description: "마계의 피와 독가시로 이루어진 식물성 마족. 생명력을 흡수해 자신을 강화하며 독이 든 덩굴로 전장을 지배하는 무서운 종족.",
+                traits: ["독가시 외피 자연 생성", "생명 흡수 촉수", "독소 면역 완전체", "급속 세포 재생"],
+                abilities: ["독덩굴 광역 구속", "생명력 흡수 포박", "독안개 방출", "가시 폭탄 투척"],
+                weakness: "건조한 환경과 염분에 매우 취약하여 사막지형에서 생명력이 급격히 고갈됨"
+            },
+            hexspire: {
+                name: "헥스스파이어",
+                emoji: "🔮",
+                rarity: "레어",
+                rarityColor: "#4ecdc4",
+                rarityBg: "rgba(78,205,196,0.08)",
+                description: "저주와 마법진의 정점에 선 마법사형 종족. 태어날 때부터 마력이 문자로 새겨진 신체를 지녀 마법 발동 속도가 타 종족을 압도한다.",
+                traits: ["신체 마법진 각인", "저주 완전 내성", "마력 문자 가시화", "마법 즉각 발동"],
+                abilities: ["다중 저주 각인", "마법진 원격 기폭", "마력 흡수 역반사", "공간 봉인 결계"],
+                weakness: "역마법 주문에 노출될 시 몸에 각인된 마법진이 역전 발동하여 자신에게 대미지를 줌"
+            },
+            chrono_wraith: {
+                name: "크로노레이스",
+                emoji: "⏳",
+                rarity: "레어",
+                rarityColor: "#e8a820",
+                rarityBg: "rgba(232,168,32,0.08)",
+                description: "시간의 흐름을 인식하는 감각 기관이 따로 존재하는 고위 마족. 과거의 잔상을 실체화하고 시간의 흐름을 국소적으로 조작한다.",
+                traits: ["시간 흐름 직관 감지", "과거 잔상 가시화", "노화 완전 정지", "미래 확률 감지"],
+                abilities: ["국소 시간 감속", "과거 잔상 소환", "시간 결계 구축", "인과율 간섭"],
+                weakness: "시간 조작을 연속 사용하면 자신의 시간축이 어긋나 과거와 현재를 혼동하는 인지 붕괴 발생"
+            },
+            golem_kin: {
+                name: "골렘킨",
+                emoji: "💎",
+                rarity: "언커먼",
+                rarityColor: "#7f8c8d",
+                rarityBg: "rgba(127,140,141,0.08)",
+                description: "마계의 대지와 광물이 마력으로 응고된 종족. 압도적인 물리 방어력과 지반 제어 능력을 보유하며 마계 광물층과 정신적으로 연결되어 있다.",
+                traits: ["광물 외피 갑주", "지진 감지 촉각", "마력 내구 강화", "중력 저항 체질"],
+                abilities: ["대지 융합 방어", "지반 균열 발생", "광물 소환 투사", "지하 매몰 함정"],
+                weakness: "물에 녹는 광물 성분이 포함되어 있어 강산성 용액에 닿으면 외피가 급격히 침식됨"
+            },
+            phantomkin: {
+                name: "팬텀킨",
+                emoji: "👁️",
+                rarity: "언커먼",
+                rarityColor: "#9e9e9e",
+                rarityBg: "rgba(158,158,158,0.08)",
+                description: "마계 유령층에서 탄생한 반투명 종족. 육체와 영혼의 경계가 희미하여 물리 공격의 절반을 무효화하며 상대의 공포를 에너지로 전환한다.",
+                traits: ["반투명 반물질 신체", "공포 에너지 흡수", "빙의 저항 완전체", "영혼 감지 직관"],
+                abilities: ["유령 통과 이동", "공포 구현 환상", "영혼 포박 손길", "차원 울부짖음"],
+                weakness: "신성 마력이나 정화 의식에 노출 시 반물질 신체가 강제로 응고되어 공격을 그대로 받음"
+            },
+            voidweaver: {
+                name: "보이드위버",
+                emoji: "🕸️",
+                rarity: "언커먼",
+                rarityColor: "#1abc9c",
+                rarityBg: "rgba(26,188,156,0.08)",
+                description: "마계 공간의 틈새에 집을 짓는 차원 직조 종족. 공간과 공간을 연결하는 거미줄 형태의 마력 실을 생성하며 이동과 함정에 특화되어 있다.",
+                traits: ["공간 실 생성 능력", "차원 감각 촉수", "마력 실 무한 공급", "중력 무시 이동"],
+                abilities: ["차원 포탈 직조", "공간 구속 거미줄", "마력 실 결계망", "공간 왜곡 함정"],
+                weakness: "강력한 충격파나 폭발에 의해 직조된 공간 실이 끊어지면 일시적으로 차원 감각을 상실함"
+            },
+            frostdemon: {
+                name: "프로스트마족",
+                emoji: "❄️",
+                rarity: "언커먼",
+                rarityColor: "#74b9ff",
+                rarityBg: "rgba(116,185,255,0.08)",
+                description: "마계 극지 빙하에서 기원한 냉기 마족. 절대 영도를 향해 진화하는 혈통으로 접촉하는 모든 것에 동상을 입히며 감정 표현이 극도로 제한된다.",
+                traits: ["체온 절대 영도 유지", "냉기 자동 방출", "동결 면역 완전체", "냉각 고속 이동"],
+                abilities: ["즉결 동결 접촉", "빙벽 소환 방어", "냉기 폭풍 방사", "절대 영역 결계"],
+                weakness: "화염 마족의 열기에 장시간 노출 시 체내 냉기가 증발하면서 일시적으로 무방비 상태가 됨"
+            },
+            mirrorsoul: {
+                name: "미러소울",
+                emoji: "🥃",
+                rarity: "레어",
+                rarityColor: "#fd79a8",
+                rarityBg: "rgba(253,121,168,0.08)",
+                description: "상대의 능력과 기억을 반사하는 거울 마족. 어떤 마법도 되받아치는 반사 본능을 지녔으나 자신 고유의 감정이 없어 정체성이 불안정하다.",
+                traits: ["마법 반사 본능", "외형 복사 모방", "감정 공명 수신", "기억 투영 열람"],
+                abilities: ["마법 완전 반사", "외형 복제 변신", "기억 영상 투사", "심리 역반사 공격"],
+                weakness: "자신의 고유한 의지나 감정이 없어 강한 감정 에너지를 지닌 상대 앞에서 자아가 혼란에 빠짐"
+            },
+            soulharvester: {
+                name: "소울하베스터",
+                emoji: "💀",
+                rarity: "레어",
+                rarityColor: "#6c5ce7",
+                rarityBg: "rgba(108,92,231,0.08)",
+                description: "영혼을 수확하여 에너지로 삼는 마계 사신형 종족. 죽어가는 생명의 기운을 흡수해 강화되며 죽음의 기운을 다루는 공포의 수확자.",
+                traits: ["영혼 감지 반경 500m", "사령 에너지 흡수", "생사 감지 직관", "저승 연결 의식"],
+                abilities: ["영혼 강제 분리", "사령 전투체 소환", "생기 흡수 손길", "저승문 개방"],
+                weakness: "살아있는 존재의 강렬한 생명력에 압도당하면 흡수 능력이 역전되어 오히려 에너지를 빼앗김"
+            }
+        };
+
+        const raceKeys = Object.keys(RaceDatabase);
+        let lotterySpinTimer = null;
+        let isRaceLotterySpinning = false;
+
+        function startRaceLottery() {
+            if (isRaceLotterySpinning) return;
+            isRaceLotterySpinning = true;
+
+            const resultCard = document.getElementById('race-result-card');
+            resultCard.classList.remove('visible');
+
+            const display = document.getElementById('lottery-race-display');
+            const btn = document.getElementById('lottery-start-btn');
+            btn.disabled = true;
+            display.classList.remove('result-show');
+            display.classList.add('spinning');
+            display.style.color = 'var(--amber)';
+
+            let spinCount = 0;
+            const totalSpins = 22 + Math.floor(Math.random() * 10);
+
+            function tick() {
+                const r = RaceDatabase[raceKeys[Math.floor(Math.random() * raceKeys.length)]];
+                display.textContent = r.emoji + '  ' + r.name;
+                spinCount++;
+
+                if (spinCount < totalSpins - 5) {
+                    lotterySpinTimer = setTimeout(tick, 80);
+                } else {
+                    // Slow-down phase
+                    const stepsLeft = totalSpins - spinCount;
+                    let step = 0;
+                    function slowTick() {
+                        const rs = RaceDatabase[raceKeys[Math.floor(Math.random() * raceKeys.length)]];
+                        display.textContent = rs.emoji + '  ' + rs.name;
+                        step++;
+                        const delay = 160 + step * 95;
+                        if (step < stepsLeft) {
+                            lotterySpinTimer = setTimeout(slowTick, delay);
+                        } else {
+                            setTimeout(finalizeLotteryResult, delay + 120);
+                        }
+                    }
+                    slowTick();
+                }
+            }
+            tick();
+        }
+
+        function finalizeLotteryResult() {
+            const selectedKey = raceKeys[Math.floor(Math.random() * raceKeys.length)];
+            const race = RaceDatabase[selectedKey];
+
+            const display = document.getElementById('lottery-race-display');
+            display.classList.remove('spinning');
+            display.style.color = '';
+            display.textContent = race.emoji + '  ' + race.name;
+            display.classList.add('result-show');
+
+            setTimeout(() => {
+                renderRaceCard(race);
+                launchFireworks();
+                isRaceLotterySpinning = false;
+                document.getElementById('lottery-start-btn').disabled = false;
+            }, 750);
+        }
+
+        function renderRaceCard(race) {
+            const badge = document.getElementById('race-rarity-badge');
+            badge.textContent = '◈  ' + race.rarity;
+            badge.style.color = race.rarityColor;
+            badge.style.borderColor = race.rarityColor;
+            badge.style.background = race.rarityBg;
+
+            document.getElementById('race-emoji-icon').textContent = race.emoji;
+            document.getElementById('race-name-big').textContent = race.name;
+            document.getElementById('race-description').textContent = race.description;
+
+            document.getElementById('race-traits-wrap').innerHTML =
+                race.traits.map(t => '<span class="race-tag">' + t + '</span>').join('');
+            document.getElementById('race-abilities-wrap').innerHTML =
+                race.abilities.map(a => '<span class="race-tag ability">' + a + '</span>').join('');
+
+            document.getElementById('race-weakness-text').textContent = '약점 — ' + race.weakness;
+
+            const card = document.getElementById('race-result-card');
+            card.classList.add('visible');
+
+            setTimeout(() => {
+                card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function resetRaceLottery() {
+            const card = document.getElementById('race-result-card');
+            card.classList.remove('visible');
+
+            const display = document.getElementById('lottery-race-display');
+            display.textContent = '??? \u00a0 추첨 대기 중';
+            display.style.color = '';
+            display.classList.remove('spinning', 'result-show');
+
+            document.querySelector('.lottery-stage').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // ═══════════════════════════════════════
+        //  FIREWORKS / CONFETTI
+        // ═══════════════════════════════════════
+        function launchFireworks() {
+            const canvas = document.getElementById('fireworks-canvas');
+            canvas.width  = window.innerWidth;
+            canvas.height = window.innerHeight;
+            canvas.style.display = 'block';
+            const ctx = canvas.getContext('2d');
+
+            const COLORS = ['#c8223a','#e8a820','#7b4bb0','#a67fd4','#ffffff','#ff6b9d','#4ecdc4','#ffd700'];
+            const particles = [];
+
+            function burst(ox, oy) {
+                const col = COLORS[Math.floor(Math.random() * COLORS.length)];
+                const count = 70 + Math.floor(Math.random() * 50);
+                for (let i = 0; i < count; i++) {
+                    const angle = (Math.PI * 2 * i / count) + (Math.random() - 0.5) * 0.4;
+                    const speed = 2.5 + Math.random() * 5;
+                    particles.push({
+                        x: ox, y: oy,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed - 1.5,
+                        color: (Math.random() < 0.25) ? '#ffffff' : col,
+                        size: 1.8 + Math.random() * 2.6,
+                        life: 0.75 + Math.random() * 0.25
+                    });
+                }
+            }
+
+            // Trigger multiple bursts
+            const burstPoints = [
+                [canvas.width * 0.25, canvas.height * 0.25],
+                [canvas.width * 0.75, canvas.height * 0.20],
+                [canvas.width * 0.50, canvas.height * 0.15],
+                [canvas.width * 0.20, canvas.height * 0.40],
+                [canvas.width * 0.80, canvas.height * 0.35],
+                [canvas.width * 0.55, canvas.height * 0.30]
+            ];
+            burstPoints.forEach((pt, i) => {
+                setTimeout(() => burst(pt[0], pt[1]), i * 260);
+            });
+
+            let rafId;
+            function draw() {
+                ctx.fillStyle = 'rgba(4,3,10,0.13)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.x  += p.vx;
+                    p.y  += p.vy;
+                    p.vy += 0.14;
+                    p.vx *= 0.992;
+                    p.life -= 0.011;
+
+                    if (p.life <= 0) { particles.splice(i, 1); continue; }
+
+                    ctx.save();
+                    ctx.globalAlpha = Math.max(0, p.life);
+                    ctx.fillStyle = p.color;
+                    ctx.shadowColor = p.color;
+                    ctx.shadowBlur = 8;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                if (particles.length > 0) {
+                    rafId = requestAnimationFrame(draw);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    canvas.style.display = 'none';
+                }
+            }
+            draw();
+
+            setTimeout(() => {
+                cancelAnimationFrame(rafId);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                canvas.style.display = 'none';
+            }, 5000);
         }
     </script>
 </body>
